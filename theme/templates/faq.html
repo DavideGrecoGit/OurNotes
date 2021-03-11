@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title_block %}
+    FAQs
+{% endblock %}
+
+{% block body_block %}
+  <div class="h-screen p-8 bg-yellow-500 flex flex-col items-center space-y-10">
+    <div class="w-3/4 p-6 bg-white rounded-xl ">
+      <h1 class=" border-b-2 border-black text-xl font-bold mb-2">About the project</h1>
+      <p>The objective of the web application is to give students a platform to share their notes between a study group. Users can create a study group that others can visit.
+        <br>
+        Within the study groups, users can post notes related to the subject in the form of images or documents. 
+        <br>
+        Users can also view what other users have posted. Others can rate and comment on the notes as a way of giving feedback or approval.
+      </p>
+    </div>
+    
+    <div class="w-3/4 p-6 bg-white rounded-xl">
+      <h1 class=" border-b-2 border-black text-xl font-bold mb-2">FAQs</h1>
+      <div>
+        <div class="w-3/4 p-6 bg-white rounded-xl ">
+          <h1 class="text-xl font-bold mb-2">Should I create an account?</h1>
+          <p>Yes.</p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+{% endblock %}

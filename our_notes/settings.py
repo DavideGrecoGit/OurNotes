@@ -15,7 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+TEMPLATE_DIR = os.path.join(BASE_DIR, os.path.join('theme','templates'))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tailwind',
+    'theme',
     'notes'
 ]
 
@@ -120,6 +122,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+
+NPM_BIN_PATH = r"C:/Program Files/nodejs/npm.cmd"
+TAILWIND_APP_NAME = 'theme'
 
 STATICFILES_DIRS = [STATIC_DIR, ]
 
