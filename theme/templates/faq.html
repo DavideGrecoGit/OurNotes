@@ -1,31 +1,44 @@
-{% extends 'base.html' %}
+{% extends 'base_components/base.html' %}
+{% load components %}
 
 {% block title_block %}
     FAQs
 {% endblock %}
 
 {% block body_block %}
-  <div class="h-screen p-8 bg-yellow-500 flex flex-col items-center space-y-10">
-    <div class="w-3/4 p-6 bg-white rounded-xl ">
-      <h1 class=" border-b-2 border-black text-xl font-bold mb-2">About the project</h1>
-      <p>The objective of the web application is to give students a platform to share their notes between a study group. Users can create a study group that others can visit.
+  <div class="h-full pt-28 p-8 bg-yellow-500 flex flex-col items-center space-y-10">
+
+    {% Card_parent title="About"%}
+      <p>
+        The objective of the web application is to give students a platform to share their notes between a study group. 
+        <br>
+        Users can create a study group that others can visit.
         <br>
         Within the study groups, users can post notes related to the subject in the form of images or documents. 
         <br>
         Users can also view what other users have posted. Others can rate and comment on the notes as a way of giving feedback or approval.
       </p>
-    </div>
-    
-    <div class="w-3/4 p-6 bg-white rounded-xl">
-      <h1 class=" border-b-2 border-black text-xl font-bold mb-2">FAQs</h1>
-      <div>
-        <div class="w-3/4 p-6 bg-white rounded-xl ">
-          <h1 class="text-xl font-bold mb-2">Should I create an account?</h1>
+    {% /Card_parent %}
+
+    {% Card_parent title="FAQs"%}
+
+      {% Card_children title="Should I create an account?"%}      
+        {% arg children %}
           <p>Yes.</p>
-        </div>
-      </div>
-    </div>
+        {% endarg %}
+      {% /Card_children %}
+
+      {% Card_children title="Lorem ipsum dolor sit amet, cu idque homero perfecto vis?"%}      
+        {% arg children %}
+          <p>
+            Lorem ipsum dolor sit amet, iudico eripuit ei qui, eu aeque blandit democritum duo.
+            <br>
+            Impedit tibique no eos, pro nullam.
+          </p>
+        {% endarg %}
+      {% /Card_children %}
+      
+    {% /Card_parent %}
     
   </div>
-  
 {% endblock %}
