@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 import os
 
 # Create your models here.
@@ -32,10 +33,15 @@ class StudyGroup(models.Model):
     groupName = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=500, blank=True)
     rules = models.CharField(max_length=300, blank=True)
+    slug = models.SlugField(blank=True, unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.groupName)
+        super(StudyGroup, self).save(*args, **kwargs)
     
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='founder')
-    members = models.ManyToManyField(User)
+    members = models.ManyToManyField(User, related_name='members')
 
     def __str__(self):
         return self.groupName

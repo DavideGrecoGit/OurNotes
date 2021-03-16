@@ -17,6 +17,10 @@ class Card_parent(Component):
     template = "base_components/card_parent.html"
 
 @register.component
+class Card_user(Component):
+    template = "base_components/card_user.html"
+
+@register.component
 class Nav_link(Component):
     template = "base_components/nav_link.html"
 

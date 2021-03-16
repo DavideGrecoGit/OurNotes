@@ -11,21 +11,23 @@
       {% if categories %}
 
           {% for cat in categories %}
-            <div class=" w-5/6 rounded-lg pb-2 space-y-2 shadow-lg bg-white">
+            <div class=" w-5/6 rounded-lg pb-2 shadow-lg bg-white">
               <!-- categories -->
-              <div class="p-2 rounded-lg border-black border-b-2 bg-white ">
-                <h1 class=" px-4 font-extrabold text-xl text-black">{{ cat.categoryName }}</h1>
+              <div class="p-1 rounded-lg border-black border-b-2 bg-white ">
+                <h1 class=" px-4 font-extrabold text-lg text-black">{{ cat.categoryName }}</h1>
               </div>
               <!-- studyGroups -->
-              <div class="flex flex-col items-center justify-center space-y-1 bg-white">
+              <div class="flex flex-col items-center justify-center space-y-3 bg-white p-4">
                 {% if groups|getItem:cat.categoryName %}
                   {% for group in groups|getItem:cat.categoryName %}
-                      <div class="p-2 w-5/6 rounded-lg bg-yellow-400 border-black border-2">
-                        <h1 class=" px-4 font-semibold text-xl">{{ group.groupName }}</h1>
+                    <a class="p-1 w-5/6 rounded-lg hover:bg-blue-500 border-black border-2" href="{% url 'notes:show_group' group.slug %}">
+                      <div>
+                        <h1 class=" px-4 font-semibold text-base">{{ group.groupName }}</h1>
                       </div>
+                    </a>
                   {% endfor %}
                   {% else %}
-                      <h1 class="text-xl border-black border-2 p-2 rounded-lg">No study group created.</h1>
+                      <h1 class="text-base border-black border-2 p-2 rounded-lg">No study group created.</h1>
                   {% endif %}
               </div>
               
@@ -33,7 +35,7 @@
           {% endfor %}
         
       {% else %}
-        <h1>No search results</h1>
+        <h1 class="p-2 text-lg bg-white border-black border-2 rounded-lg text-black font-bold text-center">No search results.</h1> 
       {% endif %}
     </div>
   </div>

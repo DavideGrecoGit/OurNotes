@@ -141,7 +141,7 @@ def populate(nUsers, maxGroups, maxNotes):
             admin, index = getRandomElement(users)
 
             members = []
-            for y in range(r.randint(1, maxUsers+1)):
+            for y in range(r.randint(1, maxUsers)):
                 member, i = getRandomElement(users)
                 if(i!=index):
                     members.append(member)

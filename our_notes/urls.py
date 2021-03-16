@@ -20,5 +20,5 @@ from notes import views
 
 urlpatterns = [
     path('', include('notes.urls')),
-    path('admin/', admin.site.urls),
+    path('reserved/admin/', admin.site.urls),
 ]
