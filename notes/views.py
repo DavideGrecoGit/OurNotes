@@ -1,7 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpResponse, request
-from django.template.defaulttags import comment
+from django.shortcuts import render,redirect
+from django.http import HttpResponse
+from django.urls import reverse
+from django.contrib.auth import authenticate, login, logout
 from notes.models import Comment, Note, StudyGroup, Category, Url
+from notes.forms import UserForm, ProfileForm
 
 # Create your views here.
 def search(request):
@@ -29,31 +31,10 @@ def show_group(request, studyGroup_slug):
     try:
         # Get studyGroup related to this slug, if any
         studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
-        studyGroup.rules = studyGroup.rules.replace("[","")
-        studyGroup.rules = studyGroup.rules.replace("]","")
-        studyGroup.description = studyGroup.description.replace("[","")
-        studyGroup.description = studyGroup.description.replace("]","")
-
-        studyGroup.rules = studyGroup.rules.replace("'","")
-        studyGroup.description = studyGroup.description.replace("'","")
-
-        studyGroup.rules = studyGroup.rules.replace(",","")
-        studyGroup.description = studyGroup.description.replace(",","")
-
-
         context_dict['group'] = studyGroup
 
-        context_dict['rules'] = "not empty"
-        if(studyGroup.rules==""):
-            context_dict['rules'] = None
-
-        context_dict['description'] = "not empty"
-        if(studyGroup.description==""):
-            context_dict['description'] = None
-
         # Get urls
-        urls = Url.objects.filter(studyGroup=studyGroup)
-        context_dict['urls'] = urls
+        context_dict['urls'] = Url.objects.filter(studyGroup=studyGroup)
 
         # Get notes
         notes = Note.objects.filter(studyGroup=studyGroup)
@@ -68,8 +49,7 @@ def show_group(request, studyGroup_slug):
         context_dict['comments'] = comments
 
         #Get members        
-        members = studyGroup.members.all()
-        context_dict['members'] = members
+        context_dict['members'] = studyGroup.members.all().order_by("username")
 
     except StudyGroup.DoesNotExist:
         # if there are no associated groups
@@ -78,3 +58,72 @@ def show_group(request, studyGroup_slug):
         context_dict['notes'] = None
 
     return render(request, 'show_group.html', context=context_dict)
+
+def register(request):
+    # True if the registration is successfull
+    registered = False
+
+    user_form = UserForm()
+    profile_form = ProfileForm()
+
+
+    if request.method == 'POST':
+
+        # REGISTRATION 
+        if request.POST.get('submit') == 'Register':
+            user_form = UserForm(request.POST)
+            profile_form = ProfileForm(request.POST)
+
+            # Check if the form is valid
+            if user_form.is_valid() and profile_form.is_valid():
+                # Save the user's form data to the database.
+                user = user_form.save()
+                
+                # Hash the password
+                user.set_password(user.password)
+                user.save()
+
+                profile = profile_form.save(commit=False)
+                profile.user = user
+
+                # Check for a profile picture
+                if 'picture' in request.FILES:
+                    profile.profileImg = request.FILES['picture']
+
+                # Registration was successful.
+                profile.save()
+                registered = True
+
+                login(request, user)
+            else:
+                # Print errors to the terminal.
+                print(user_form.errors)
+
+        # LOGIN
+        elif request.POST.get('submit') == 'Sign-in':
+            # Get credencials
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            # Use Django's machinery to attempt to see if the username/password
+            # combination is valid - a User object is returned if it is.
+            user = authenticate(username=username, password=password)
+
+            if user:
+                if user.is_active:
+                    login(request, user)
+                    return redirect(reverse('notes:search'))
+                else:
+                    # An inactive account was used - no logging in!
+                    return HttpResponse("Your account is disabled.")
+            else:
+                # Bad login details were provided. So we can't log the user in.
+                error = "Invalid username or password, or both"
+                return render(request, 'register.html', context={'form': user_form, 'form_profile': profile_form, 'registered': registered, 'errors': error})
+
+    # Render the template depending on the context.
+    return render(request, 'register.html', context={'form': user_form, 'form_profile': profile_form,'registered': registered, 'errors': None})
+
+def logout_view(request):
+    logout(request)
+    return redirect(reverse('notes:search'))

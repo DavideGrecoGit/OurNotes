@@ -24,3 +24,7 @@ class Card_user(Component):
 class Nav_link(Component):
     template = "base_components/nav_link.html"
 
+@register.component
+class Register_field(Component):
+    template = "base_components/register_field.html"
+

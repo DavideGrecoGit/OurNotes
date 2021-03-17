@@ -5,7 +5,7 @@
   {% if group %}
     {{ group.groupName }}
   {% else %}
-    Unknown group
+    Unknown study group
   {% endif %}
 {% endblock %}
 
@@ -66,7 +66,7 @@
                     <p>{{ note.description }}</p>    
                   </div>
                   <!-- Comments -->
-                  <div class="flex flex-col space-y-2 justify-center">
+                  <div class="flex flex-col space-y-4 justify-center">
                     <h1 class="text-base font-semibold w-full border-black border-b-2">Comments</h1>
                     {% for comment in comments|getItem:note.noteName %}
                       <div class="px-4 space-y-2">
@@ -103,21 +103,22 @@
     <!-- Sidebar -->
     <div class="pt-24 p-8 w-1/4 bg-yellow-400 space-y-4">
       <!-- group Description -->
-      {% if group.description %}
-        {% Card_parent title="Description"%}      
-          {% arg children %}
-            <p class="text-sm">{{ group.description }}</p>
-          {% endarg %}
-        {% /Card_parent %}
-      {% endif %}
       
-      {% if rules %}
-        {% Card_parent title="Rules"%}      
-          {% arg children %}
-            <p class="text-sm">{{ group.rules }}</p>
-          {% endarg %}
-        {% /Card_parent %}
-      {% endif %}
+      {% Card_parent title="Description"%}
+        {% if group.description %}     
+          <p class="text-sm">{{ group.description }}</p>
+        {% else %}
+          <h1 class="text-base text-center border-black border-2 p-1 px-2 rounded-lg">No description available</h1>
+        {% endif %}
+      {% /Card_parent %}
+
+      {% Card_parent title="Rules"%}
+        {% if group.rules %}     
+          <p class="text-sm">{{ group.rules }}</p>
+        {% else %}
+          <h1 class="text-base text-center border-black border-2 p-1 px-2 rounded-lg">This group has no rules!</h1>
+        {% endif %}
+      {% /Card_parent %}
 
     </div>
     {% else %} 

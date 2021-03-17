@@ -35,10 +35,19 @@ def getRandomElement(list):
     index = r.randint(0,len(list)-1)
     return list[index], index
 
+def getParagraph(min, max):
+    paragraphs = fake.paragraphs(nb=r.randint(min,max))
+
+    text = ""
+    for p in paragraphs:
+        text = text+p+"\n"
+
+    return text
+
 def add_user( username, email):
     user = User.objects.get_or_create(username=username)[0]
     user.email = email
-    user.password = make_password(fake.password(length=12))
+    user.set_password(fake.password(length=12))
     user.save()
     return user
 
@@ -49,8 +58,8 @@ def add_category(name):
 
 def add_studyGroup(cat, name, admin, members):
     group = StudyGroup.objects.get_or_create(category=cat, groupName=name, admin=admin)[0]
-    group.description = fake.paragraphs(nb=r.randint(1,6))
-    group.rules = fake.paragraphs(nb=r.randint(0,3))
+    group.description = getParagraph(0,6)
+    group.rules = getParagraph(0,3)
     group.members.add(admin)
     
     for member in members:
@@ -70,7 +79,7 @@ def add_url(group, urls):
 
 def add_note(group, creator, name):
     note = Note.objects.get_or_create(studyGroup=group, user=creator, noteName=name)[0]
-    note.description = fake.paragraphs(nb=r.randint(1,6))
+    note.description = getParagraph(0,6)
     note.save()
     return note
 
@@ -81,7 +90,8 @@ def add_rateNotes(note, user):
 
 def add_comment(note, user, replyTo=None):
     comment = Comment.objects.get_or_create(note=note, user=user)[0]
-    comment.text = fake.paragraphs(nb=r.randint(1,6))
+    
+    comment.text = getParagraph(1,3)
 
     if(replyTo!=None):
         comment.replyTo = replyTo
@@ -119,7 +129,6 @@ def populate(nUsers, maxGroups, maxNotes):
 
     users = []
     groups = []
-
 
     print("\nAdding users...")
     # Add users

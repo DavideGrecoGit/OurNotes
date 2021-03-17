@@ -1,5 +1,8 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 import os
 
 # Create your models here.
@@ -20,14 +23,14 @@ def user_notes(instance, filename):
     # file will be uploaded to MEDIA_ROOT / user_<id>/<filename> 
     return os.path.join(os.path.join("uploads",'user_{0}'.format(instance.id)),os.path.join("notes", filename))
 
-class User(models.Model):
-    username = models.CharField(max_length=255, unique=True)
-    email = models.EmailField(max_length=255, unique=True)
-    password = models.CharField(max_length=100)
-    profileImgs = models.ImageField(upload_to = user_imgs)
+User._meta.get_field('email')._unique = True
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profileImg = models.ImageField(upload_to = user_imgs, blank = True)
     
     def __str__(self):
-        return self.username
+        return self.user.username
 
 class StudyGroup(models.Model):
     groupName = models.CharField(max_length=128, unique=True)

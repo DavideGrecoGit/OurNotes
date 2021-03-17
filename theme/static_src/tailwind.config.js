@@ -19,6 +19,7 @@ module.exports = {
             backgroundColor: ['active'],
             textColor: ['active'],
             borderColor: ['active'],
+            display: ['responsive', 'group-hover', 'group-focus'],
         },
     },
     plugins: [],
