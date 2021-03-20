@@ -1,9 +1,11 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from notes.models import Comment, Note, StudyGroup, Category, Url
-from notes.forms import UserForm, ProfileForm
+from notes.forms import UserForm, ProfileForm, GroupForm
 
 # Create your views here.
 def search(request):
@@ -66,7 +68,6 @@ def register(request):
     user_form = UserForm()
     profile_form = ProfileForm()
 
-
     if request.method == 'POST':
 
         # REGISTRATION 
@@ -119,11 +120,44 @@ def register(request):
             else:
                 # Bad login details were provided. So we can't log the user in.
                 error = "Invalid username or password, or both"
-                return render(request, 'register.html', context={'form': user_form, 'form_profile': profile_form, 'registered': registered, 'errors': error})
+                return render(request, 'register/register.html', context={'form': user_form, 'form_profile': profile_form, 'registered': registered, 'errors': error})
 
     # Render the template depending on the context.
-    return render(request, 'register.html', context={'form': user_form, 'form_profile': profile_form,'registered': registered, 'errors': None})
+    return render(request, 'register/register.html', context={'form': user_form, 'form_profile': profile_form,'registered': registered, 'errors': None})
 
 def logout_view(request):
     logout(request)
     return redirect(reverse('notes:search'))
+
+def account(request, username):
+    context_dict = {}
+
+    try:
+        user = User.objects.get(username=username)
+        
+        context_dict['user_account'] = user
+        context_dict['groups_admin'] = StudyGroup.objects.filter(members = user, admin = user)
+        context_dict['groups'] = StudyGroup.objects.filter(members = user).exclude(admin = user)
+
+    except User.DoesNotExist:
+        context_dict['groups'] = None
+        context_dict['user_account'] = None
+
+    return render(request, 'account.html', context=context_dict)
+
+@login_required
+def create_group(request):
+    group = GroupForm()
+
+    if request.method == 'POST':
+        group = GroupForm(request.POST)                
+        group.save()
+    else:
+        # Print errors to the terminal.
+        print(group.errors)
+
+    return render(request, 'register/register.html', context={'form': group})
+    
+
+
+

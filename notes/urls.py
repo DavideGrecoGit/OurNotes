@@ -10,4 +10,6 @@ urlpatterns = [
     path('search/<slug:studyGroup_slug>/', views.show_group, name='show_group'),
     path('register/', views.register, name='register'),
     path('logout/', views.logout_view, name='logout'),
+    path('myaccount/<slug:username>/', views.account, name='account'),
+    path('myaccount/create_group', views.create_group, name='create_group'),
 ]

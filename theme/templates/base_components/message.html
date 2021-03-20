@@ -1,0 +1,10 @@
+{% if condition %}     
+    {{ children }}
+{% else %}
+    <div class="{{div_css}}">
+        <h1 class="{{msg_css}} text-center border-black border-2 p-1 px-2 rounded-lg">{{msg}}</h1>
+    </div>
+{% endif %}
+
+
+

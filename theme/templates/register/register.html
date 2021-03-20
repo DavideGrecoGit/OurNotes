@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body_block %}
-    <div class="h-full min-h-screen pt-24 p-8 bg-yellow-500 flex flex-row space-x-20 justify-center">
+    <div class="h-full min-h-screen pt-24 p-8 bg-yellow-500 flex flex-row justify-around">
 
         {% if registered %}
             <div class="flex flex-row justify-center items-center w-full">
@@ -16,7 +16,7 @@
                 </div>
             </div>
         {% else %}
-            {% Card_parent css="w-full h-min text-xl p-2" title="Register"%}
+            {% Card_parent css="w-5/12 text-xl p-2" title="Register"%}
                     <!-- 16 enctype="multipart/form-data used to upload the image -->
                     <form id="user_form" method="post" action="{% url 'notes:register' %}" 16 enctype="multipart/form-data">
                     
@@ -43,7 +43,9 @@
                     </form>
             {% /Card_parent %}
 
-            {% Card_parent css="w-full text-xl p-2" title="Sign-in"%}
+            <div class="border-white border-2"></div>
+
+            {% Card_parent css="w-5/12 text-xl p-2" title="Sign-in"%}
                 <form id="login_form" method="post" action="{% url 'notes:register' %}">
                     
                     {% csrf_token %}
