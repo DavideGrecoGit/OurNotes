@@ -1,6 +1,8 @@
 from os import name
 from django.contrib.auth.models import Group, User
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render,redirect
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -9,93 +11,105 @@ from notes.models import Comment, Note, StudyGroup, Category, Url
 from notes.forms import UserForm, ProfileForm, GroupForm
 
 # Create your views here.
-def search(request):
-    context_dict = {}
 
-    category_list = Category.objects.order_by('categoryName')
+class Search(View):
+    def get(self, request):
+        context_dict = {}
+        context_dict['categories'] = None
+        groups = {}
 
-    groups = {}
-    for category in category_list:
-        group = StudyGroup.objects.filter(category = category)
-        groups[category.categoryName] = group
+        # Get caegories
+        category_list = Category.objects.order_by('categoryName')
+        
+        # Check if the query returned the categories
+        if(category_list.exists()):
+            # Get groups for each category
+            for category in category_list:
+                group = StudyGroup.objects.filter(category = category)
+                groups[category.categoryName] = group
 
-    context_dict['groups'] = groups
-    context_dict['categories'] = category_list
+            context_dict['groups'] = groups
+            context_dict['categories'] = category_list
 
-    return render(request, 'search.html', context=context_dict)
+        return render(request, 'search.html', context=context_dict)
 
-def faq(request):
-    context_dict = {}
-    return render(request, 'faq.html', context=context_dict)
+class Faq(View):
+    def get(self, request):
+        return render(request, 'faq.html', context={})
 
-def show_group(request, studyGroup_slug):
-    context_dict = {}
+class Show_group(View):
+    def get(self, request, studyGroup_slug):
+        context_dict = {}
 
-    try:
-        # Get studyGroup related to this slug, if any
-        studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
-        context_dict['group'] = studyGroup
+        try:
+            # Get studyGroup related to this slug, if any
+            studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
+            context_dict['group'] = studyGroup
 
-        # Get urls
-        context_dict['urls'] = Url.objects.filter(studyGroup=studyGroup)
+            # Get urls
+            context_dict['urls'] = Url.objects.filter(studyGroup=studyGroup)
 
-        # Get notes
-        notes = Note.objects.filter(studyGroup=studyGroup)
-        context_dict['notes'] = notes
+            # Get notes
+            notes = Note.objects.filter(studyGroup=studyGroup)
+            context_dict['notes'] = notes
 
-        # Get comments
-        comments = {}
-        for note in notes:
-            comment = Comment.objects.filter(note = note)
-            comments[note.noteName] = comment
+            # Get comments
+            comments = {}
+            for note in notes:
+                comment = Comment.objects.filter(note = note)
+                comments[note.noteName] = comment
 
-        context_dict['comments'] = comments
+            context_dict['comments'] = comments
 
-        #Get members        
-        context_dict['members'] = studyGroup.members.all().order_by("username")
+            #Get members        
+            context_dict['members'] = studyGroup.members.all().order_by("username")
 
-    except StudyGroup.DoesNotExist:
-        # if there are no associated groups
-        # the template will display the "no category" message for us.
-        context_dict['group'] = None
-        context_dict['notes'] = None
+        except StudyGroup.DoesNotExist:
+            # if there are no associated groups the template will display the "no category" message.
+            context_dict['group'] = None
 
-    return render(request, 'show_group.html', context=context_dict)
+        return render(request, 'show_group.html', context=context_dict)
 
-def register(request):
-    # True if the registration is successfull
-    registered = False
+class Register(View):
+    def get(self, request):
+        context_dict = {}
+        context_dict['registered'] = False
+        context_dict['user_form'] = UserForm()
+        context_dict['profile_form'] = ProfileForm()
 
-    user_form = UserForm()
-    profile_form = ProfileForm()
+        # Render the template 
+        return render(request, 'forms/register.html', context=context_dict)
 
-    if request.method == 'POST':
+    def post(self, request):
+        context_dict = {}
+        context_dict['error'] = None
+        context_dict['registered'] = False
 
         # REGISTRATION 
         if request.POST.get('submit') == 'Register':
+
             user_form = UserForm(request.POST)
             profile_form = ProfileForm(request.POST)
 
             # Check if the form is valid
             if user_form.is_valid() and profile_form.is_valid():
+
                 # Save the user's form data to the database.
                 user = user_form.save()
-                
                 # Hash the password
                 user.set_password(user.password)
                 user.save()
 
                 profile = profile_form.save(commit=False)
                 profile.user = user
-
                 # Check for a profile picture
                 if 'picture' in request.FILES:
                     profile.profileImg = request.FILES['picture']
 
                 # Registration was successful.
                 profile.save()
-                registered = True
-
+                
+                context_dict['registered'] = True
                 login(request, user)
 
         # LOGIN
@@ -104,10 +118,8 @@ def register(request):
             username = request.POST.get('username')
             password = request.POST.get('password')
 
-            # Use Django's machinery to attempt to see if the username/password
-            # combination is valid - a User object is returned if it is.
+            # See if the username/password combination is valid
             user = authenticate(username=username, password=password)
-
             if user:
                 if user.is_active:
                     login(request, user)
@@ -116,40 +128,47 @@ def register(request):
                     # An inactive account was used - no logging in!
                     return HttpResponse("Your account is disabled.")
             else:
-                # Bad login details were provided. So we can't log the user in.
-                error = "Invalid username or password, or both"
-                return render(request, 'forms/register.html', context={'form': user_form, 'form_profile': profile_form, 'registered': registered, 'Sign_in_errors': error})
+                # Invalid login details provided
+                context_dict['Sign_in_errors'] = "Invalid username or password, or both"
 
-    # Render the template depending on the context.
-    return render(request, 'forms/register.html', context={'form': user_form, 'form_profile': profile_form,'registered': registered})
+        context_dict['user_form'] = user_form
+        context_dict['profile_form'] = profile_form
 
-@login_required
-def logout_view(request):
-    logout(request)
-    return redirect(reverse('notes:search'))
+        return render(request, 'forms/register.html', context=context_dict)
 
-@login_required
-def account(request, username):
-    context_dict = {}
-    context_dict['user_account'] = None
+class Logout(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        logout(request)
+        return redirect(reverse('notes:search'))
     
-    if(request.user.username == username):
-        try:
-            user = User.objects.get(username=username)
-            context_dict['groups'] = StudyGroup.objects.filter(members = user)
-            context_dict['user_account'] = user
-                
-        except User.DoesNotExist:
-            context_dict['groups'] = None
 
-    return render(request, 'account.html', context=context_dict)
+class Account(View):
+    @method_decorator(login_required)
+    def get(self, request, username):
+        context_dict = {}
+        context_dict['user_account'] = None
+        
+        if(request.user.username == username):
+            try:
+                user = User.objects.get(username=username)
+                context_dict['groups'] = StudyGroup.objects.filter(members = user)
+                context_dict['user_account'] = user
+                    
+            except User.DoesNotExist:
+                context_dict['groups'] = None
 
-@login_required
-def create_group(request, username):
-    group_form = GroupForm()
+        return render(request, 'account.html', context=context_dict)
 
-    if request.method == 'POST':
-
+class Create_group(View):
+    @method_decorator(login_required)
+    def get(self, request, username):
+        group_form = GroupForm()
+        return render(request, 'forms/create_group.html', context={'form': group_form})
+    
+    @method_decorator(login_required)
+    def post(self, request, username):
+        # Get category
         cat_id = request.POST.get("category")
         category =  Category.objects.get(id = cat_id)
 
@@ -166,11 +185,13 @@ def create_group(request, username):
 
             name = post["groupName"]
             
+            # check if the group name has been already used
             try:
                 StudyGroup.objects.get(groupName = name)
                 error = "A group with the same name already exists."
                 return render(request, 'forms/create_group.html', context={'form': group_form, 'errors': error})
-
+            
+            # If the name is valid, create a new group
             except:
                 user = User.objects.get(username=username)
                 group = StudyGroup.objects.create(groupName = name, category = category, admin = user)
@@ -179,8 +200,6 @@ def create_group(request, username):
                 group.save()
             
             return redirect(reverse('notes:account', kwargs={'username':username}))
-        
-    return render(request, 'forms/create_group.html', context={'form': group_form})
     
 
 
