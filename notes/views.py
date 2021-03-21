@@ -123,22 +123,24 @@ def register(request):
     # Render the template depending on the context.
     return render(request, 'forms/register.html', context={'form': user_form, 'form_profile': profile_form,'registered': registered})
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect(reverse('notes:search'))
 
+@login_required
 def account(request, username):
     context_dict = {}
-
-    try:
-        user = User.objects.get(username=username)
-        
-        context_dict['user_account'] = user
-        context_dict['groups'] = StudyGroup.objects.filter(members = user)
-
-    except User.DoesNotExist:
-        context_dict['groups'] = None
-        context_dict['user_account'] = None
+    context_dict['user_account'] = None
+    
+    if(request.user.username == username):
+        try:
+            user = User.objects.get(username=username)
+            context_dict['groups'] = StudyGroup.objects.filter(members = user)
+            context_dict['user_account'] = user
+                
+        except User.DoesNotExist:
+            context_dict['groups'] = None
 
     return render(request, 'account.html', context=context_dict)
 
