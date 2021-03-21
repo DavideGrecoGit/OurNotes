@@ -1,0 +1,36 @@
+{% extends 'base_components/base.html' %}
+{% load components %}
+
+{% block title_block %} 
+    Create a group
+{% endblock %}
+
+{% block body_block %}
+    <div class="h-full min-h-screen pt-24 p-8 bg-yellow-500 flex flex-row justify-around">
+        {% Card_parent css="w-5/12 text-xl p-2" title="Create a group"%}
+            <form id="group_form" method="post" action="{% url 'notes:create_group' user.username %}">
+            <!-- <form id="group_form" method="post" action="{% url 'notes:search' %}"> -->
+            
+                {% csrf_token %}
+                {% if errors %}
+                    <div class="bg-red-500 text-base font-semibold text-white rounded-lg p-2">{{ errors }}</div>
+                {% endif %}
+                <!-- Display form fields-->
+                <div class="pt-6 text-base flex flex-col items-center space-y-4">
+                    {% Form_field errors=form.groupName.errors field=form.groupName %}{% /Form_field %}
+                    {% Form_field errors=form.category.errors field=form.category %}{% /Form_field %}
+                    {% Form_field errors=form.description.errors field=form.description %}{% /Form_field %}
+                    {% Form_field errors=form.rules.errors field=form.rules %}{% /Form_field %}
+
+                    <!-- Provide a button to click to submit the form. -->
+                    <div class="pt-6">
+                        <input class="p-2 bg-blue-500 text-base text-white font-bold rounded-lg "
+                        type="submit" name="submit" value="Create"/>
+                    </div>
+                    
+                </div>
+            </form>
+        {% /Card_parent %}
+    </div>
+    
+{% endblock %}

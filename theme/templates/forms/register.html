@@ -24,9 +24,9 @@
 
                         <!-- Display form fields-->
                         <div class="pt-6 text-base flex flex-col items-center space-y-4">
-                            {% Register_field errors=form.username.errors field=form.username %}{% /Register_field %}
-                            {% Register_field errors=form.email.errors field=form.email %}{% /Register_field %}
-                            {% Register_field errors=form.password.errors field=form.password %}{% /Register_field %}
+                            {% Form_field errors=form.username.errors field=form.username %}{% /Form_field %}
+                            {% Form_field errors=form.email.errors field=form.email %}{% /Form_field %}
+                            {% Form_field errors=form.password.errors field=form.password %}{% /Form_field %}
 
                             {{ form_profile.profileImg.errors }}
                             <div class="w-full border-black rounded-lg border-2 p-2 text-black">
@@ -51,8 +51,8 @@
                     {% csrf_token %}
                     
                     <div class="pt-6 text-base flex flex-col items-center space-y-4">
-                        {% if errors %}
-                        <div class="bg-red-500 font-semibold text-white rounded-lg p-2">{{ errors }}</div>
+                        {% if Sign_in_errors %}
+                        <div class="bg-red-500 font-semibold text-white rounded-lg p-2">{{ Sign_in_errors }}</div>
                         {% endif %}
 
                         <input class="w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium"

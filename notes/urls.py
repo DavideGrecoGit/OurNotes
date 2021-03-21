@@ -11,5 +11,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('logout/', views.logout_view, name='logout'),
     path('myaccount/<slug:username>/', views.account, name='account'),
-    path('myaccount/create_group', views.create_group, name='create_group'),
+    path('myaccount/<slug:username>/create_group/', views.create_group, name='create_group'),
 ]

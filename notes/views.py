@@ -1,5 +1,6 @@
-from django.contrib.auth.models import User
-from django.shortcuts import render,redirect
+from os import name
+from django.contrib.auth.models import Group, User
+from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -96,13 +97,10 @@ def register(request):
                 registered = True
 
                 login(request, user)
-            else:
-                # Print errors to the terminal.
-                print(user_form.errors)
 
         # LOGIN
         elif request.POST.get('submit') == 'Sign-in':
-            # Get credencials
+            # Get credentials
             username = request.POST.get('username')
             password = request.POST.get('password')
 
@@ -120,10 +118,10 @@ def register(request):
             else:
                 # Bad login details were provided. So we can't log the user in.
                 error = "Invalid username or password, or both"
-                return render(request, 'register/register.html', context={'form': user_form, 'form_profile': profile_form, 'registered': registered, 'errors': error})
+                return render(request, 'forms/register.html', context={'form': user_form, 'form_profile': profile_form, 'registered': registered, 'Sign_in_errors': error})
 
     # Render the template depending on the context.
-    return render(request, 'register/register.html', context={'form': user_form, 'form_profile': profile_form,'registered': registered, 'errors': None})
+    return render(request, 'forms/register.html', context={'form': user_form, 'form_profile': profile_form,'registered': registered})
 
 def logout_view(request):
     logout(request)
@@ -136,8 +134,7 @@ def account(request, username):
         user = User.objects.get(username=username)
         
         context_dict['user_account'] = user
-        context_dict['groups_admin'] = StudyGroup.objects.filter(members = user, admin = user)
-        context_dict['groups'] = StudyGroup.objects.filter(members = user).exclude(admin = user)
+        context_dict['groups'] = StudyGroup.objects.filter(members = user)
 
     except User.DoesNotExist:
         context_dict['groups'] = None
@@ -146,17 +143,42 @@ def account(request, username):
     return render(request, 'account.html', context=context_dict)
 
 @login_required
-def create_group(request):
-    group = GroupForm()
+def create_group(request, username):
+    group_form = GroupForm()
 
     if request.method == 'POST':
-        group = GroupForm(request.POST)                
-        group.save()
-    else:
-        # Print errors to the terminal.
-        print(group.errors)
 
-    return render(request, 'register/register.html', context={'form': group})
+        cat_id = request.POST.get("category")
+        category =  Category.objects.get(id = cat_id)
+
+        post = request.POST.copy()
+        post["category"] = category
+        
+        group_form = GroupForm(post, instance=category)
+
+        if(group_form.is_valid()):
+
+            # group = group_form.save(commit=False)
+            # group.admin = User.objects.get(username=username)
+            # group.save()  
+
+            name = post["groupName"]
+            
+            try:
+                StudyGroup.objects.get(groupName = name)
+                error = "A group with the same name already exists."
+                return render(request, 'forms/create_group.html', context={'form': group_form, 'errors': error})
+
+            except:
+                user = User.objects.get(username=username)
+                group = StudyGroup.objects.create(groupName = name, category = category, admin = user)
+                group.description = post["description"]
+                group.rules = post["rules"]
+                group.save()
+            
+            return redirect(reverse('notes:account', kwargs={'username':username}))
+        
+    return render(request, 'forms/create_group.html', context={'form': group_form})
     
 
 

@@ -23,6 +23,6 @@ class Nav_link(Component):
     template = "base_components/nav_link.html"
 
 @register.component
-class Register_field(Component):
-    template = "register/register_field.html"
+class Form_field(Component):
+    template = "forms/form_field.html"
 

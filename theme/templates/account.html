@@ -36,18 +36,18 @@
       <!-- Navbar -->
       <div class="text-lg w-full flex flex-row justify-between items-center p-1 text-center border-b-4 border-black">
         <h1 class="p-2 font-bold">Your study groups</h1>
-        <button class="p-1 px-2 text-lg rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Create group</button>
+        <a href="{% url 'notes:create_group' user.username %}" class="p-1 px-2 text-lg rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Create group</a>
       </div>
      
       {% Message condition=groups msg="You have not joined any group yet!"%}
-        <div class="w-full px-8">
+        <div class="w-full px-8 flex flex-col space-y-2">
           {% for group in groups%}
-            <div class="p-2 border-2 rounded-lg border-gray-200 flex flex-row justify-between items-center shadow-md">
-              <a href="{% url 'notes:show_group' group.slug %}" class=" px-8 mr-2 hover:text-white hover:bg-blue-500 p-2 font-bold rounded-lg ">{{group.groupName}}</a>
-              {% if group.admin == user.username %}
-                <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500 hover:border-white">Delete</button>
+            <div class="p-2 px-6 border-2 rounded-lg border-gray-200 flex flex-row justify-between items-center shadow-md">
+              <a href="{% url 'notes:show_group' group.slug %}" class=" px-2 mr-2 border-b-2 border-blue-500 text-blue-500 hover:text-blue-800 hover:border-blue-700 font-bold ">{{group.groupName}}</a>
+              {% if group.admin == user_account %}
+                <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Delete</button>
               {% else %}
-                <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500 hover:border-white">Leave</button>
+                <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Leave</button>
               {% endif %}
             </div>
           {% endfor%} 
@@ -55,6 +55,6 @@
       {% /Message %}
     </div>
     {% /Message %}
-    
+
   </div>
 {% endblock %}

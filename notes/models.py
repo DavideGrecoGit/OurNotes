@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import os
 
-# Create your models here.
+#Create your models here.
 class Category(models.Model):
     categoryName = models.CharField(max_length=128, unique=True)
 
@@ -37,14 +37,15 @@ class StudyGroup(models.Model):
     description = models.CharField(max_length=500, blank=True)
     rules = models.CharField(max_length=300, blank=True)
     slug = models.SlugField(blank=True, unique=True)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.groupName)
-        super(StudyGroup, self).save(*args, **kwargs)
     
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='founder')
     members = models.ManyToManyField(User, related_name='members')
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.groupName)
+        super(StudyGroup, self).save(*args, **kwargs)
+        self.members.add(self.admin)
 
     def __str__(self):
         return self.groupName

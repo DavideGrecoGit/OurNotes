@@ -1,5 +1,6 @@
+from enum import Flag, unique
 from django import forms
-from notes.models import StudyGroup, User, Profile
+from notes.models import Category, StudyGroup, Url, User, Profile
 from django.forms.fields import EmailField
 
 css = ' w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium'
@@ -25,18 +26,20 @@ class ProfileForm(forms.ModelForm):
 
 
 class GroupForm(forms.ModelForm):
-    groupName = forms.TimeField()
+    groupName = forms.CharField()
     groupName.widget.attrs.update({'class':css,'placeholder': 'Group Name'})
 
-    description = forms.TextInput()
-    description.attrs.update({'class':css,'placeholder': 'Insert a description here...'})
+    category = forms.ModelMultipleChoiceField(queryset=Category.objects.all())
+    category.widget.attrs.update({'class':css})
 
-    rules = forms.TextInput()
-    rules.attrs.update({'class':css,'placeholder': 'Insert rules here...'})
+    description = forms.CharField(widget=forms.Textarea, required=False)
+    description.widget.attrs.update({'class':css,'placeholder': 'Insert a description here...'})
+
+    rules = forms.CharField(widget=forms.Textarea, required=False)
+    rules.widget.attrs.update({'class':css,'placeholder': 'Insert rules here...'})
 
     class Meta:
         model = StudyGroup
-        exclude = ('slug',)
-
+        fields = ('groupName','description','rules','category',)
 
 

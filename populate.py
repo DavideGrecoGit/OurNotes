@@ -60,7 +60,6 @@ def add_studyGroup(cat, name, admin, members):
     group = StudyGroup.objects.get_or_create(category=cat, groupName=name, admin=admin)[0]
     group.description = getParagraph(0,6)
     group.rules = getParagraph(0,3)
-    group.members.add(admin)
     
     for member in members:
         group.members.add(member)
