@@ -3,11 +3,11 @@ from django.contrib.auth.models import Group, User
 from django.shortcuts import render,redirect
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from notes.models import Comment, Note, StudyGroup, Category, Url
+from notes.models import Comment, Note, Profile, StudyGroup, Category, Url
 from notes.forms import UserForm, ProfileForm, GroupForm
 
 # Create your views here.
@@ -36,39 +36,6 @@ class Search(View):
 class Faq(View):
     def get(self, request):
         return render(request, 'faq.html', context={})
-
-class Show_group(View):
-    def get(self, request, studyGroup_slug):
-        context_dict = {}
-
-        try:
-            # Get studyGroup related to this slug, if any
-            studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
-            context_dict['group'] = studyGroup
-
-            # Get urls
-            context_dict['urls'] = Url.objects.filter(studyGroup=studyGroup)
-
-            # Get notes
-            notes = Note.objects.filter(studyGroup=studyGroup)
-            context_dict['notes'] = notes
-
-            # Get comments
-            comments = {}
-            for note in notes:
-                comment = Comment.objects.filter(note = note)
-                comments[note.noteName] = comment
-
-            context_dict['comments'] = comments
-
-            #Get members        
-            context_dict['members'] = studyGroup.members.all().order_by("username")
-
-        except StudyGroup.DoesNotExist:
-            # if there are no associated groups the template will display the "no category" message.
-            context_dict['group'] = None
-
-        return render(request, 'show_group.html', context=context_dict)
 
 class Register(View):
     def get(self, request):
@@ -144,21 +111,80 @@ class Logout(View):
     
 
 class Account(View):
+    def get_user_details(self, username):
+        user = User.objects.get(username=username)
+        #user_form = UserForm({'username':user.username,'email':user.email})
+        user_profile = Profile.objects.get_or_create(user=user)[0]
+        form = ProfileForm({'profileImg': user_profile.profileImg})
+        
+        return (user, user_profile, form)
+
     @method_decorator(login_required)
     def get(self, request, username):
         context_dict = {}
         context_dict['user_account'] = None
         
         if(request.user.username == username):
-            try:
-                user = User.objects.get(username=username)
+                (user, user_profile, form) = self.get_user_details(username)
                 context_dict['groups'] = StudyGroup.objects.filter(members = user)
                 context_dict['user_account'] = user
-                    
-            except User.DoesNotExist:
-                context_dict['groups'] = None
+                #context_dict['user_form'] = user_form
+                context_dict['user_profile'] = user_profile
+                context_dict['form'] = form
 
         return render(request, 'account.html', context=context_dict)
+
+    @method_decorator(login_required)
+    def post(self, request, username):
+        context_dict = {}
+
+        if(request.user.username == username):
+            (user, user_profile, form) = self.get_user_details(username)
+
+        form = ProfileForm(request.POST, request.FILES, instance=user_profile)
+
+        if form.is_valid():
+            form.save(commit=True)
+            return redirect('notes:account', user.username)
+        else:
+            context_dict['user_profile'] = user_profile
+            context_dict['user_account'] = user
+            context_dict['form'] = form
+        
+        return render(request, 'rango/profile.html', context_dict)
+    
+class Show_group(View):
+    def get(self, request, studyGroup_slug):
+        context_dict = {}
+
+        try:
+            # Get studyGroup related to this slug, if any
+            studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
+            context_dict['group'] = studyGroup
+
+            # Get urls
+            context_dict['urls'] = Url.objects.filter(studyGroup=studyGroup)
+
+            # Get notes
+            notes = Note.objects.filter(studyGroup=studyGroup)
+            context_dict['notes'] = notes
+
+            # Get comments
+            comments = {}
+            for note in notes:
+                comment = Comment.objects.filter(note = note)
+                comments[note.noteName] = comment
+
+            context_dict['comments'] = comments
+
+            #Get members        
+            context_dict['members'] = studyGroup.members.all().order_by("username")
+
+        except StudyGroup.DoesNotExist:
+            # if there are no associated groups the template will display the "no category" message.
+            context_dict['group'] = None
+
+        return render(request, 'show_group.html', context=context_dict)
 
 class Create_group(View):
     @method_decorator(login_required)
@@ -170,11 +196,11 @@ class Create_group(View):
     def post(self, request, username):
         # Get category
         cat_id = request.POST.get("category")
-        category =  Category.objects.get(id = cat_id)
+        category =  Category.objects.get(id = int(cat_id))
 
         post = request.POST.copy()
         post["category"] = category
-        
+
         group_form = GroupForm(post, instance=category)
 
         if(group_form.is_valid()):
@@ -199,8 +225,22 @@ class Create_group(View):
                 group.rules = post["rules"]
                 group.save()
             
-            return redirect(reverse('notes:account', kwargs={'username':username}))
-    
+            return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group.slug}))
+
+class Remove_group(View):
+    @method_decorator(login_required)
+    def get(self, request):
+
+        #if(request.user.username == )
+        group_id = request.GET['group_id']
+        
+
+        group = StudyGroup.objects.get(id=int(group_id))
+        group.delete()
+
+        return HttpResponse()
+
+
 
 
 

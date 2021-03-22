@@ -3,8 +3,8 @@ from django_component import Library, Component
 register = Library()
 
 @register.component
-class Card_children(Component):
-    template = "base_components/card_children.html"
+class Card_child(Component):
+    template = "base_components/card_child.html"
 
 @register.component
 class Card_parent(Component):

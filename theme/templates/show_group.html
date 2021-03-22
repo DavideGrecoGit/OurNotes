@@ -22,8 +22,13 @@
           hover:text-yellow-500 hover:bg-white"
           href="{% url 'notes:search' %}">Back</a>
           <h1 class="p-2 text-center w-1/2 border-b-4 border-white text-white text-xl font-bold">{{ group.groupName }}</h1>
-          <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500 hover:border-white">Leave</button>
-
+          {% if user.is_authenticated %}
+            {% if group.admin == user %}
+              <button id="remove_btn" data-groupid="{{ group.id }}" class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Delete</button>
+            {% else %}
+              <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Leave</button>
+            {% endif %}
+          {% endif %}
         </div>
 
         <!-- Meeting details -->
@@ -78,8 +83,8 @@
                       
                       {% for comment in comments|getItem:note.noteName %}
                         <div class="px-4 space-y-2">
-                          <div class="w-min">
-                          {% Card_user css="p-1 px-2 text-sm" user=comment.user%}{% /Card_user %} 
+                          <div class="">
+                          {% Card_user css="text-sm" user=comment.user%}{% /Card_user %} 
                           </div>
                           <p class="px-4">{{ comment.text }}</p>
                         </div>
@@ -98,7 +103,7 @@
           <h1 class="p-2 pl-4 w-full text-lg font-bold">Members</h1>
           <div class="px-8 pt-2 p-4 flex flex-row space-x-4 rounded-lg bg-white">
             {% for member in members %}
-              {% Card_user css="p-2 shadow-md" user=member%}{% /Card_user %}    
+              {% Card_user css="shadow-md" user=member%}{% /Card_user %}    
             {% endfor %}
           </div>
         </div>

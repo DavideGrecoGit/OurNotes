@@ -7,7 +7,7 @@
 
 {% block body_block %}
     <div class="h-full min-h-screen pt-24 p-8 bg-yellow-500 flex flex-row justify-around">
-        {% Card_parent css="w-5/12 text-xl p-2" title="Create a group"%}
+        {% Card_parent css="w-10/12 text-xl p-2" title="Create a group"%}
             <form id="group_form" method="post" action="{% url 'notes:create_group' user.username %}">
             <!-- <form id="group_form" method="post" action="{% url 'notes:search' %}"> -->
             

@@ -10,51 +10,77 @@
 
     {% Message condition=user_account div_css=" flex flex-row justify-center items-center w-full" msg_css="bg-white" msg="Impossible to display the requested acocunt page."%}
       <!-- Account details -->
-      <div class="w-full flex flex-row justify-around items-stretch">
-        {% Card_parent css="w-4/12 text-lg" title="Profile Image"%}
-          <div class="flex flex-col justify-items-center">
-              <h1>Show image pic</h1>
-          </div>
-        {% /Card_parent %}
-        {% Card_parent css="w-7/12 text-lg" title="Account details"%}
-          <div class="flex flex-col justify-center">
-              <div class="flex flex-row items-center">
-                  <label>Username: </label>
-                  <h1 class="px-4">{{ user.username }}</h1>
-              </div>
-              <div class="flex flex-row items-center">
-                <label>Email: </label>
-                <h1 class="px-4">{{ user.email }}</h1>
-              </div>
+      <div class="w-full flex flex-row justify-around bg-white rounded-lg">
 
-          </div>
-        {% /Card_parent %}
-      </div>
+        <!-- Profile Image -->
+        {% Card_parent css=" shadow-none text-lg" title="Profile Image"%}
+          <div class=" flex flex-col justify-center items-center">
+            
+            <img src="{{ user_profile.profileImg.url }}" class="object-cover h-52 w-52 rounded-full border-2 border-gray-200" 
+            alt="{{ user_account.username }}'s profile image" />
 
-    <!-- Study groups -->
-    <div class="w-full text-base p-4 px-6 bg-white shadow-xl rounded-xl flex flex-col items-center space-y-4">
-      <!-- Navbar -->
-      <div class="text-lg w-full flex flex-row justify-between items-center p-1 text-center border-b-4 border-black">
-        <h1 class="p-2 font-bold">Your study groups</h1>
-        <a href="{% url 'notes:create_group' user.username %}" class="p-1 px-2 text-lg rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Create group</a>
-      </div>
-     
-      {% Message condition=groups msg="You have not joined any group yet!"%}
-        <div class="w-full px-8 flex flex-col space-y-2">
-          {% for group in groups%}
-            <div class="p-2 px-6 border-2 rounded-lg border-gray-200 flex flex-row justify-between items-center shadow-md">
-              <a href="{% url 'notes:show_group' group.slug %}" class=" px-2 mr-2 border-b-2 border-blue-500 text-blue-500 hover:text-blue-800 hover:border-blue-700 font-bold ">{{group.groupName}}</a>
+            <!-- Form to update the image -->
+            <form class="flex flex-col justify-around text-base space-y-4" id="user_form" method="post" action="{% url 'notes:account' user_account.username %}" 16 enctype="multipart/form-data">  
+              {% csrf_token %}
               
-              {% if group.admin == user_account %}
-                <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Delete</button>
-              {% else %}
-                <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Leave</button>
+              <!-- Display errors, if any -->
+              {% if form.profileImg.errors %}
+                  <div class="bg-red-500 font-semibold text-white text-sm rounded-lg p-1 mb-1">{{ form.profileImg.errors }}</div>
               {% endif %}
-            </div>
-          {% endfor%} 
+
+              <div class="flex flex-row items-center justify-center text-sm border-black rounded-lg border-2 p-1 text-black">
+                  {{ form.profileImg }}
+                  <!-- Submission button -->
+                  <input class="p-2 bg-blue-500 text-sm text-white font-bold rounded-lg"
+                    type="submit" name="submit" value="Upload a new picture"/>
+              </div>
+  
+            </form>
+          </div>
+        {% /Card_parent %}
+        
+        <!-- Account details -->
+        {% Card_parent css=" w-full  shadow-none text-lg" title="Account details"%}
+          
+          {% Card_child title="Username"%}
+            <h1 class="px-4">{{ user_account.username }}</h1>
+          {% /Card_child %}
+          
+          {% Card_child title="Email"%}
+            <h1 class="px-4">{{ user_account.email }}</h1>
+          {% /Card_child %}
+        
+        {% /Card_parent %}
+      </div>
+    
+      <!-- Study groups -->
+      <div class="w-full text-base p-4 px-6 bg-white shadow-xl rounded-xl flex flex-col items-center space-y-4">
+        <!-- Navbar groups -->
+        <div class="text-lg w-full flex flex-row justify-between items-center p-1 text-center border-b-4 border-black">
+          <h1 class="p-2 font-bold">Your study groups</h1>
+          <!-- Create new group button -->
+          <a href="{% url 'notes:create_group' user.username %}" class="p-1 px-2 text-lg rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Create group</a>
         </div>
-      {% /Message %}
-    </div>
+      
+        {% Message condition=groups msg="You have not joined any group yet!"%}
+          <div class="w-full px-8 flex flex-col space-y-2">
+            {% for group in groups %}
+              <div id="{{ group.id }}" class="p-2 px-6 border-2 rounded-lg border-gray-200 flex flex-row justify-between items-center shadow-md">
+                <a href="{% url 'notes:show_group' group.slug %}" class=" px-2 mr-2 border-b-2 border-blue-500 text-blue-500 hover:text-blue-800 hover:border-blue-700 font-bold ">{{group.groupName}}</a>
+                
+                <!-- Delete/Leave buttons -->
+                {% if group.admin == user_account %}
+                  <button id="remove_btn" data-groupid="{{ group.id }}" class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Delete</button>
+                {% else %}
+                  <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Leave</button>
+                {% endif %}
+
+              </div>
+            {% endfor%} 
+          </div>
+        {% /Message %}
+      </div>
+
     {% /Message %}
 
   </div>

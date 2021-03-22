@@ -1,5 +1,5 @@
 from django.db import models
-from django.template.defaultfilters import slugify
+from django.template.defaultfilters import default, slugify
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -16,12 +16,12 @@ class Category(models.Model):
         return self.categoryName
 
 def user_imgs(instance, filename): 
-    # file will be uploaded to MEDIA_ROOT / user_<id>/<filename> 
-    return os.path.join(os.path.join("uploads",'user_{0}'.format(instance.id)),os.path.join("profile_imgs", filename))
+    # file will be uploaded to MEDIA_ROOT/user_<id>/profile_imgs/<filename> 
+    return os.path.join('user_{0}'.format(instance.id),os.path.join("profile_imgs", filename))
 
 def user_notes(instance, filename): 
     # file will be uploaded to MEDIA_ROOT / user_<id>/<filename> 
-    return os.path.join(os.path.join("uploads",'user_{0}'.format(instance.id)),os.path.join("notes", filename))
+    return os.path.join('user_{0}'.format(instance.id),os.path.join("notes", filename))
 
 User._meta.get_field('email')._unique = True
 
