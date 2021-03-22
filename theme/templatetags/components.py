@@ -3,18 +3,6 @@ from django_component import Library, Component
 register = Library()
 
 @register.component
-class Card_child(Component):
-    template = "base_components/card_child.html"
-
-@register.component
-class Card_parent(Component):
-    template = "base_components/card_parent.html"
-
-@register.component
-class Card_user(Component):
-    template = "base_components/card_user.html"
-
-@register.component
 class Message(Component):
     template = "base_components/message.html"
 
@@ -25,4 +13,22 @@ class Nav_link(Component):
 @register.component
 class Form_field(Component):
     template = "forms/form_field.html"
+
+@register.component
+class Group_buttons(Component):
+    template = "base_components/Group_buttons.html"
+
+
+# CARDS
+@register.component
+class Card_child(Component):
+    template = "base_components/cards/card_child.html"
+
+@register.component
+class Card_parent(Component):
+    template = "base_components/cards/card_parent.html"
+
+@register.component
+class Card_user(Component):
+    template = "base_components/cards/card_user.html"
 

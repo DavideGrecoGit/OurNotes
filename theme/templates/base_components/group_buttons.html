@@ -1,0 +1,14 @@
+{% load components %}
+
+{% Message condition=user.is_authenticated msg_css="border-white text-white" msg="Sign-in to Join"%}
+    {% if group|isMember:user %}
+        {% if group.admin == user %}
+            <button id="remove_btn" data-group_slug="{{ group.slug }}" class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Delete</button>
+        {% else %}
+            <button id="leave_btn" data-group_slug="{{ group.slug }}" class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Leave</button>
+        {% endif %}
+
+    {% else %}
+        <button id="join_btn" data-group_slug="{{ group.slug }}" class="p-2 px-3 text-base rounded-lg border-2 bg-white border-green-500 font-bold text-green-500 hover:text-white hover:bg-green-500">Join</button>
+    {% endif %}
+{% /Message %}

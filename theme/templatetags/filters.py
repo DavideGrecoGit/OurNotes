@@ -1,4 +1,4 @@
-from notes.models import Profile
+from notes.models import Profile, User
 from django.template.defaulttags import register
 
 @register.filter
@@ -11,6 +11,11 @@ def getImage(user):
     if(profile):
         if(profile.profileImg):
             return profile.profileImg.url
+    return "/uploads/user_default.png"
 
+@register.filter
+def isMember(group, user):
+    if(user in group.members.all()):
+        return True
     return False
     

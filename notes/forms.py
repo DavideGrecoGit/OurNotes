@@ -24,7 +24,6 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ('profileImg',)
 
-
 class GroupForm(forms.ModelForm):
     groupName = forms.CharField()
     groupName.widget.attrs.update({'class':css,'placeholder': 'Group Name'})
@@ -41,5 +40,18 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = StudyGroup
         fields = ('groupName','description','rules','category',)
+
+
+class NoteForm(forms.ModelForm):
+    noteName = forms.CharField()
+    noteName.widget.attrs.update({'class':css,'placeholder': 'Note Name'})
+
+    description = forms.CharField(widget=forms.Textarea, required=False)
+    description.widget.attrs.update({'class':css,'placeholder': 'Insert a description here...'})
+
+    class Meta:
+        model = Profile
+        fields = ('noteName', 'description', 'profileImg',)
+
 
 

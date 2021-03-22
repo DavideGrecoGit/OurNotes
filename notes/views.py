@@ -232,13 +232,35 @@ class Remove_group(View):
     def get(self, request):
 
         #if(request.user.username == )
-        group_id = request.GET['group_id']
-        
+        group_slug = request.GET['group_slug']
+        group = StudyGroup.objects.get(slug=group_slug)
 
-        group = StudyGroup.objects.get(id=int(group_id))
-        group.delete()
+        if(request.user == group.admin):
+            group.delete()
+        else:
+            group.members.remove(request.user)
 
         return HttpResponse()
+
+class Join_group(View):
+    @method_decorator(login_required)
+    def get(self, request):
+
+        group_slug = request.GET['group_slug']
+        group = StudyGroup.objects.get(slug=group_slug)
+        group.members.add(request.user)
+
+        return HttpResponse()
+
+# class Join_group(View):
+#     @method_decorator(login_required)
+#     def get(self, request, group_slug):
+
+#         group = StudyGroup.objects.get(slug=group_slug)
+#         group.members.add(request.user)
+
+#         return redirect('notes:search')
+
 
 
 

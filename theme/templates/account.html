@@ -16,8 +16,8 @@
         {% Card_parent css=" shadow-none text-lg" title="Profile Image"%}
           <div class=" flex flex-col justify-center items-center">
             
-            <img src="{{ user_profile.profileImg.url }}" class="object-cover h-52 w-52 rounded-full border-2 border-gray-200" 
-            alt="{{ user_account.username }}'s profile image" />
+            <img src="{{ user_account|getImage }}" class="object-cover h-52 w-52 rounded-full border-2 border-gray-200" 
+              alt="{{ user_account.username }}'s profile image" />
 
             <!-- Form to update the image -->
             <form class="flex flex-col justify-around text-base space-y-4" id="user_form" method="post" action="{% url 'notes:account' user_account.username %}" 16 enctype="multipart/form-data">  
@@ -65,16 +65,11 @@
         {% Message condition=groups msg="You have not joined any group yet!"%}
           <div class="w-full px-8 flex flex-col space-y-2">
             {% for group in groups %}
-              <div id="{{ group.id }}" class="p-2 px-6 border-2 rounded-lg border-gray-200 flex flex-row justify-between items-center shadow-md">
+              <div id="{{ group.slug }}" class="p-2 px-6 border-2 rounded-lg border-gray-200 flex flex-row justify-between items-center shadow-md">
                 <a href="{% url 'notes:show_group' group.slug %}" class=" px-2 mr-2 border-b-2 border-blue-500 text-blue-500 hover:text-blue-800 hover:border-blue-700 font-bold ">{{group.groupName}}</a>
                 
                 <!-- Delete/Leave buttons -->
-                {% if group.admin == user_account %}
-                  <button id="remove_btn" data-groupid="{{ group.id }}" class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Delete</button>
-                {% else %}
-                  <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Leave</button>
-                {% endif %}
-
+                {% Group_buttons group=group user=user%} {% /Group_buttons %}
               </div>
             {% endfor%} 
           </div>

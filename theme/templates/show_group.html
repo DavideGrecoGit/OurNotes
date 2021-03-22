@@ -22,13 +22,8 @@
           hover:text-yellow-500 hover:bg-white"
           href="{% url 'notes:search' %}">Back</a>
           <h1 class="p-2 text-center w-1/2 border-b-4 border-white text-white text-xl font-bold">{{ group.groupName }}</h1>
-          {% if user.is_authenticated %}
-            {% if group.admin == user %}
-              <button id="remove_btn" data-groupid="{{ group.id }}" class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Delete</button>
-            {% else %}
-              <button class="p-2 px-3 text-base rounded-lg border-2 bg-white border-red-500 font-bold text-red-500 hover:text-white hover:bg-red-500">Leave</button>
-            {% endif %}
-          {% endif %}
+          <!-- Join, Leave, Delete buttons -->
+          {% Group_buttons group=group user=user%} {% /Group_buttons %}
         </div>
 
         <!-- Meeting details -->
@@ -124,6 +119,7 @@
           {% /Message %}
         {% /Card_parent %}
       </div>
+
     {% /Message %}
     
   </div>

@@ -15,4 +15,6 @@ urlpatterns = [
     path('myaccount/<slug:username>/', views.Account.as_view(), name='account'),
     path('myaccount/<slug:username>/create_group/', views.Create_group.as_view(), name='create_group'),
     path('remove_group/', views.Remove_group.as_view(), name='remove_group'),
+    path('join_group/', views.Join_group.as_view(), name='join_group'),
+    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
