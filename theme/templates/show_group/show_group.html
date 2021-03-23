@@ -1,0 +1,47 @@
+{% extends 'base_components/base.html' %}
+{% load components %}
+
+{% block title_block %}
+  {% if group %}
+    {{ group.groupName }}
+  {% else %}
+    Unknown study group
+  {% endif %}
+{% endblock %}
+
+{% block body_block %}
+  <div class=" h-full min-h-screen w-full bg-yellow-500 flex flex-row">
+    
+    {% Message condition=group div_css="pt-24 p-8 flex flex-row justify-center items-center w-full" msg_css="p-2 text-lg bg-white" msg="The group you are looking for does not exist."%}
+      <!-- Main -->
+      <div class="pt-24 p-8 w-3/4 flex flex-col justify-items-center space-y-4">
+        
+        <!-- NavBar -->
+        <div class="flex flex-row justify-between items-center rounded-lg p-2">
+          <a class=" border-white border-2 p-2 rounded-lg text-base text-white font-bold
+          hover:text-yellow-500 hover:bg-white"
+          href="{% url 'notes:search' %}">Back</a>
+          <h1 class="p-2 text-center w-1/2 border-b-4 border-white text-white text-xl font-bold">{{ group.groupName }}</h1>
+          <!-- Join, Leave, Delete buttons -->
+          {% Group_buttons group=group user=user%} {% /Group_buttons %}
+        </div>
+
+        <!-- Meeting details -->
+        {% Meetings urls=urls %}{% /Meetings %}
+
+        <!-- Notes -->
+        {% Notes group=group notes=notes comments=comments%}{% /Notes %}
+
+        <!-- Members -->
+        {% Members members=members %}{% /Members %}
+        
+      </div>
+    
+      <!-- Sidebar -->
+      {% Sidebar group=group%}{% /Sidebar %}
+
+    {% /Message %}
+    
+  </div>
+{% endblock %}
+

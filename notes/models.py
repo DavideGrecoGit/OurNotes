@@ -60,7 +60,7 @@ class Url(models.Model):
         return self.label
 
 class Note(models.Model):
-    noteName = models.CharField(max_length=255, unique=True)
+    noteName = models.CharField(max_length=255)
     description = models.CharField(max_length=500, blank=True)
     date = models.DateTimeField(auto_now=True)
     file = models.FileField(upload_to = user_notes)

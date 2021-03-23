@@ -26,6 +26,7 @@
 
   </head>
   <body>
+    <!-- Navbar -->
     <div class="fixed w-full bg-white flex-wrap flex items-center justify-between px-10 shadow-lg">
       <div>𝓞𝓾𝓻𝓝𝓸𝓽𝓮𝓼</div>
       <div class="h-full flex flex-row items-center justify-between space-x-16 font-bold">
@@ -49,8 +50,9 @@
           <a href="{% url 'notes:register' %}" class="p-2 px-3 rounded-lg border-2 border-blue-500 font-bold text-blue-500 hover:text-white hover:bg-blue-500">Sign up</a>
         {% endif %}
       </div>
-      
     </div>
+
+    <!-- Page body -->
     <div>
       {% block body_block %}
       {% endblock %}

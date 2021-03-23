@@ -186,7 +186,7 @@ class Show_group(View):
             # if there are no associated groups the template will display the "no category" message.
             context_dict['group'] = None
 
-        return render(request, 'show_group.html', context=context_dict)
+        return render(request, 'show_group/show_group.html', context=context_dict)
 
 class Create_group(View):
     @method_decorator(login_required)

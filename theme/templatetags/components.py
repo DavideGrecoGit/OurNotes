@@ -10,6 +10,28 @@ class Message(Component):
 class Nav_link(Component):
     template = "base_components/nav_link.html"
 
+
+#Show_group
+@register.component
+class Sidebar(Component):
+    template = "show_group/sidebar.html"
+
+@register.component
+class Meetings(Component):
+    template = "show_group/meetings.html"
+
+@register.component
+class Notes(Component):
+    template = "show_group/notes/notes.html"
+
+@register.component
+class Comments(Component):
+    template = "show_group/notes/comments.html"
+
+@register.component
+class Members(Component):
+    template = "show_group/members.html"
+
 #Forms
 @register.component
 class Form_field(Component):

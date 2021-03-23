@@ -1,0 +1,50 @@
+{% load components %}
+{% load static %}
+
+<div class="p-4 px-4 flex flex-col justify-center items-center bg-white rounded-lg shadow-lg">
+    <!-- Notes Navbar -->
+    <div class= "flex flex-row justify-between items-center w-full ">
+      <h1 class="w-full text-lg font-bold">Notes</h1>
+      {% Message condition=user.is_authenticated msg="Sign-in to upload"%}
+        {% Message condition=group|isMember:user msg="Join to upload"%}
+          <a href="{% url 'notes:upload_note' group.slug %}" class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Upload</a>
+        {% /Message %}
+      {% /Message %}
+    </div>
+
+    {% Message condition=notes msg="No notes have been uploaded yet.<br> Be the first!"%}
+      <div class="w-full p-4 px-8 flex flex-col space-y-4">
+        {% for note in notes %}
+          <!-- File -->
+          <div class="w-full flex flex-col rounded-lg border-black border-2">
+            <!-- File Navbar -->
+            <div onclick="toggle('{{note}}','block')" class="w-full border-black border-b-2 p-2 flex flex-row items-center">
+              <img src="{% static 'icons/drop.png' %}" alt='dropdown' class="w-5 h-5"/>
+              <h1 class="px-4 text-blue-800 font-bold">{{note.noteName}}</h1>
+            </div>
+
+            <!-- File body -->
+            <div id='{{note}}' class="hidden p-2 px-4 text-sm space-y-4">
+              <!-- Details Navbar -->
+              <div class="flex flex-row justify-between px-8">
+                <div class="flex flex-row items-center justify-center">
+                  <label class="pr-2">Uploaded by:</label>
+                  <h1 class="font-semibold">{{ note.user }}</h1>
+                </div>
+                <hi>{{ note.date }}</hi>
+              </div>
+              <!-- description -->
+              <div class="space-y-2">
+                <h1 class=" text-base font-semibold w-full border-black border-b-2">Description</h1>
+                <p>{{ note.description }}</p>    
+              </div>
+              
+              <!-- Comments -->
+              {% Comments comments=comments %}{% /Comments %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% /Message %}
+
+  </div>
