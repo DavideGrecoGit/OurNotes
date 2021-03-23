@@ -1,0 +1,58 @@
+{% extends 'base_components/base.html' %}
+{% load components %}
+
+{% block title_block %} 
+    Register/Login
+{% endblock %}
+
+{% block body_block %}
+    <div class="h-full min-h-screen pt-24 p-8 bg-yellow-500 flex flex-row justify-around">
+
+        {% if registered %}
+            <div class="flex flex-row justify-center items-center w-full">
+                <div class="p-8 pb-6 bg-white flex flex-col shadow-lg items-center space-y-2 rounded-lg ">
+                    <h1 class="font-semibold text-center">Thank you for registering!</h1>
+                    <a href="{% url 'notes:search' %}" class="border-blue-500 border-b-2 text-blue-500">Return to the homepage</a><br />
+                </div>
+            </div>
+        {% else %}
+            {% Card_parent css="w-5/12 text-xl p-2" title="Register"%}
+                <!-- 16 enctype="multipart/form-data used to upload the image -->
+                <form id="user_form" method="post" action="{% url 'notes:register' %}" 16 enctype="multipart/form-data">
+                
+                    {% csrf_token %}
+
+                    <!-- Display form fields-->
+                    <div class="pt-6 text-base flex flex-col items-center space-y-4">
+                        {% Form_field field=user_form.username %}{% /Form_field %}
+                        {% Form_field field=user_form.email %}{% /Form_field %}
+                        {% Form_field field=user_form.password %}{% /Form_field %}
+                        {% Form_file field=profile_form.profileImg msg="Profile picture:" %}{% /Form_file %}
+
+                        {% Form_btn css="bg-blue-500" value="Register"%}{% /Form_btn %}
+                    </div>
+                </form>
+            {% /Card_parent %}
+
+            <div class="border-white border-2"></div>
+
+            {% Card_parent css="w-5/12 text-xl p-2" title="Sign-in"%}
+                <form id="login_form" method="post" action="{% url 'notes:register' %}">
+                    {% csrf_token %}
+                    <div class="pt-6 text-base flex flex-col items-center space-y-4">
+                        {% Form_error error=Sign_in_errors %}{% /Form_error %}
+
+                        <input class="w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium"
+                        type="text" name="username" placeholder="Username"/>
+
+                        <input class="w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium"
+                        type="password" name="password" placeholder="Password" autocomplete="current-password"/>
+
+                        {% Form_btn css="bg-blue-500" value="Sign-in"%}{% /Form_btn %}
+                    </div>
+                </form>
+            {% /Card_parent %}
+        {% endif %}
+    </div>
+    
+{% endblock %}

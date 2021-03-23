@@ -23,19 +23,11 @@
             <form class="flex flex-col justify-around text-base space-y-4" id="user_form" method="post" action="{% url 'notes:account' user_account.username %}" 16 enctype="multipart/form-data">  
               {% csrf_token %}
               
-              <!-- Display errors, if any -->
-              {% if form.profileImg.errors %}
-                  <div class="bg-red-500 font-semibold text-white text-sm rounded-lg p-1 mb-1">{{ form.profileImg.errors }}</div>
-              {% endif %}
-
-              <div class="flex flex-row items-center justify-center text-sm border-black rounded-lg border-2 p-1 text-black">
-                  {{ form.profileImg }}
-                  <!-- Submission button -->
-                  <input class="p-2 bg-blue-500 text-sm text-white font-bold rounded-lg"
-                    type="submit" name="submit" value="Upload a new picture"/>
-              </div>
-  
-            </form>
+                <div class="flex flex-col justify-center items-center">
+                  {% Form_file field=form.profileImg msg="" %} {% /Form_file %}
+                  {% Form_btn css="bg-blue-500 text-sm" value="Upload a new picture" %}{% /Form_btn %}    
+                </div>
+              </form>
           </div>
         {% /Card_parent %}
         

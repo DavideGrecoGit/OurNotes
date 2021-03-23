@@ -7,11 +7,19 @@ def getItem(dictionary, key):
 
 @register.filter
 def getImage(user):
-    profile = Profile.objects.get(user=user)
-    if(profile):
-        if(profile.profileImg):
-            return profile.profileImg.url
-    return "/uploads/user_default.png"
+
+    default_img = "/static/icons/user_default.png"
+
+    try:
+        profile = Profile.objects.get(user=user)
+        if(profile):
+            if(profile.profileImg):
+                return profile.profileImg.url
+        
+        return default_img
+
+    except:
+        return default_img
 
 @register.filter
 def isMember(group, user):

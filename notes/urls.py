@@ -10,6 +10,7 @@ urlpatterns = [
     path('search/', views.Search.as_view(), name='search'),
     path('faq/', views.Faq.as_view(), name='faq'),
     path('search/<slug:studyGroup_slug>/', views.Show_group.as_view(), name='show_group'),
+    path('search/<slug:group_slug>/upload_note/', views.Upload_note.as_view(), name='upload_note'),
     path('register/', views.Register.as_view(), name='register'),
     path('logout/', views.Logout.as_view(), name='logout'),
     path('myaccount/<slug:username>/', views.Account.as_view(), name='account'),

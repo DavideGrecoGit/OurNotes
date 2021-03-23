@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from notes.models import Comment, Note, Profile, StudyGroup, Category, Url
-from notes.forms import UserForm, ProfileForm, GroupForm
+from notes.forms import NoteForm, UserForm, ProfileForm, GroupForm
 
 # Create your views here.
 
@@ -45,18 +45,21 @@ class Register(View):
         context_dict['profile_form'] = ProfileForm()
 
         # Render the template 
-        return render(request, 'forms/register.html', context=context_dict)
+        return render(request, 'register.html', context=context_dict)
 
     def post(self, request):
         context_dict = {}
         context_dict['error'] = None
         context_dict['registered'] = False
+        user_form = UserForm()
+        profile_form = ProfileForm()
+
 
         # REGISTRATION 
         if request.POST.get('submit') == 'Register':
 
             user_form = UserForm(request.POST)
-            profile_form = ProfileForm(request.POST)
+            profile_form = ProfileForm(request.POST, request.FILES)
 
             # Check if the form is valid
             if user_form.is_valid() and profile_form.is_valid():
@@ -70,8 +73,8 @@ class Register(View):
                 profile = profile_form.save(commit=False)
                 profile.user = user
                 # Check for a profile picture
-                if 'picture' in request.FILES:
-                    profile.profileImg = request.FILES['picture']
+                if 'profilePic' in request.FILES:
+                    profile.profileImg = request.FILES['profilePic']
 
                 # Registration was successful.
                 profile.save()
@@ -101,7 +104,7 @@ class Register(View):
         context_dict['user_form'] = user_form
         context_dict['profile_form'] = profile_form
 
-        return render(request, 'forms/register.html', context=context_dict)
+        return render(request, 'register.html', context=context_dict)
 
 class Logout(View):
     @method_decorator(login_required)
@@ -109,7 +112,6 @@ class Logout(View):
         logout(request)
         return redirect(reverse('notes:search'))
     
-
 class Account(View):
     def get_user_details(self, username):
         user = User.objects.get(username=username)
@@ -190,7 +192,7 @@ class Create_group(View):
     @method_decorator(login_required)
     def get(self, request, username):
         group_form = GroupForm()
-        return render(request, 'forms/create_group.html', context={'form': group_form})
+        return render(request, 'create_group.html', context={'form': group_form})
     
     @method_decorator(login_required)
     def post(self, request, username):
@@ -215,7 +217,7 @@ class Create_group(View):
             try:
                 StudyGroup.objects.get(groupName = name)
                 error = "A group with the same name already exists."
-                return render(request, 'forms/create_group.html', context={'form': group_form, 'errors': error})
+                return render(request, 'create_group.html', context={'form': group_form, 'errors': error})
             
             # If the name is valid, create a new group
             except:
@@ -252,14 +254,31 @@ class Join_group(View):
 
         return HttpResponse()
 
-# class Join_group(View):
-#     @method_decorator(login_required)
-#     def get(self, request, group_slug):
+class Upload_note(View):
+    @method_decorator(login_required)
+    def get(self, request, group_slug):
+        note_form = NoteForm()
+        return render(request, 'upload_note.html', context={'note_form': note_form, 'group_slug':group_slug})
+    
+    @method_decorator(login_required)
+    def post(self, request, group_slug):
+        
+        user = request.user
+        group = StudyGroup.objects.get(slug=group_slug)
+        note_form = NoteForm(request.POST, request.FILES)
 
-#         group = StudyGroup.objects.get(slug=group_slug)
-#         group.members.add(request.user)
+        if(note_form.is_valid()):
 
-#         return redirect('notes:search')
+            note = note_form.save(commit=False)
+            note.user = user
+            note.studyGroup = group
+            note.file = request.FILES['file']
+
+            note.save()
+            
+            return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group.slug}))
+
+        return render(request, 'upload_note.html', context={'note_form': note_form, 'group_slug':group_slug})
 
 
 

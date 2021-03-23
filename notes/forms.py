@@ -1,6 +1,6 @@
 from enum import Flag, unique
 from django import forms
-from notes.models import Category, StudyGroup, Url, User, Profile
+from notes.models import Category, Note, StudyGroup, Url, User, Profile
 from django.forms.fields import EmailField
 
 css = ' w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium'
@@ -49,9 +49,11 @@ class NoteForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea, required=False)
     description.widget.attrs.update({'class':css,'placeholder': 'Insert a description here...'})
 
+    file = forms.FileField(label='Select a file', help_text='max. 42 megabytes')
+
     class Meta:
-        model = Profile
-        fields = ('noteName', 'description', 'profileImg',)
+        model = Note
+        fields = ('noteName', 'description', 'file',)
 
 
 

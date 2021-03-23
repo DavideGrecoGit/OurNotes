@@ -10,9 +10,22 @@ class Message(Component):
 class Nav_link(Component):
     template = "base_components/nav_link.html"
 
+#Forms
 @register.component
 class Form_field(Component):
-    template = "forms/form_field.html"
+    template = "base_components/forms/form_field.html"
+
+@register.component
+class Form_file(Component):
+    template = "base_components/forms/form_file.html"
+
+@register.component
+class Form_error(Component):
+    template = "base_components/forms/Form_error.html"
+
+@register.component
+class Form_btn(Component):
+    template = "base_components/forms/form_btn.html"
 
 @register.component
 class Group_buttons(Component):

@@ -1,0 +1,25 @@
+{% extends 'base_components/base.html' %}
+{% load components %}
+
+{% block title_block %}
+    Upload note
+{% endblock %}
+
+{% block body_block %}
+  <div class="h-full min-h-screen pt-28 p-8 bg-yellow-500 flex flex-row items-center justify-center">
+
+    {% Card_parent title="Upload a new note"%}
+        <form id="note_form" method="post" action="{% url 'notes:upload_note' group_slug %}" 16 enctype="multipart/form-data">
+            {% csrf_token %}
+        
+            <!-- Display form fields-->
+            <div class="pt-6 text-base flex flex-col items-center space-y-4">
+                {% Form_field errors=note_form.noteName.errors field=note_form.noteName %}{% /Form_field %}
+                {% Form_field errors=note_form.description.errors field=note_form.description %}{% /Form_field %}
+                {% Form_file field=note_form.file msg="Note file:" %}{% /Form_file %}
+                <!-- Submit button -->
+                {% Form_btn css="bg-blue-500" value="Upload"%}{% /Form_btn %}
+            </div>
+        </form>
+    {% /Card_parent %}
+{% endblock %}

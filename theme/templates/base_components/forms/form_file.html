@@ -1,0 +1,9 @@
+{% load components %}
+
+<div class="w-full">
+    {% Form_error error=field.errors %}{% /Form_error %}
+    <div class="w-full border-black rounded-lg border-2 p-2 text-black">
+        <label class="px-2 font-semibold">{{ msg }}</label>
+        {{ field }}
+    </div>
+</div>

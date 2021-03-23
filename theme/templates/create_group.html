@@ -17,16 +17,12 @@
                 {% endif %}
                 <!-- Display form fields-->
                 <div class="pt-6 text-base flex flex-col items-center space-y-4">
-                    {% Form_field errors=form.groupName.errors field=form.groupName %}{% /Form_field %}
-                    {% Form_field errors=form.category.errors field=form.category %}{% /Form_field %}
-                    {% Form_field errors=form.description.errors field=form.description %}{% /Form_field %}
-                    {% Form_field errors=form.rules.errors field=form.rules %}{% /Form_field %}
+                    {% Form_field field=form.groupName %}{% /Form_field %}
+                    {% Form_field field=form.category %}{% /Form_field %}
+                    {% Form_field field=form.description %}{% /Form_field %}
+                    {% Form_field field=form.rules %}{% /Form_field %}
 
-                    <!-- Provide a button to click to submit the form. -->
-                    <div class="pt-6">
-                        <input class="p-2 bg-blue-500 text-base text-white font-bold rounded-lg "
-                        type="submit" name="submit" value="Create"/>
-                    </div>
+                    {% Form_btn css="bg-blue-500" value="Create"%}{% /Form_btn %}
                     
                 </div>
             </form>

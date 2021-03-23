@@ -31,7 +31,7 @@
           <h1 class="w-full text-lg font-bold">Meeting links</h1>
           <div class="px-8 p-2 flex flex-row space-x-4 rounded-lg bg-white">
             {% for url in urls %}
-            <a href='{{ url.link }}' target="_blank" class="text-center border-blue-500 border-b-2 font-semibold text-blue-500">{{ url.label }}</a>
+              <a href='{{ url.link }}' target="_blank" class="text-center border-blue-500 border-b-2 font-semibold text-blue-500">{{ url.label }}</a>
             {% endfor %}
           </div>
         </div>
@@ -41,7 +41,12 @@
           <!-- Notes Navbar -->
           <div class= "flex flex-row justify-between items-center w-full ">
             <h1 class="w-full text-lg font-bold">Notes</h1>
-            <button class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Upload</button>
+
+            {% Message condition=user.is_authenticated msg="Sign-in to upload"%}
+              {% Message condition=group|isMember:user msg="Join to upload"%}
+                <a href="{% url 'notes:upload_note' group.slug %}" class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Upload</a>
+              {% /Message %}
+            {% /Message %}
           </div>
 
           {% Message condition=notes msg="No notes have been uploaded yet.<br> Be the first!"%}
@@ -49,11 +54,13 @@
               {% for note in notes %}
                 <!-- File -->
                 <div class="w-full flex flex-col rounded-lg border-black border-2">
+
                   <!-- File Navbar -->
                   <div onclick="toggle('{{note}}','block')" class="w-full border-black border-b-2 p-2 flex flex-row items-center">
-                    <img src="{% static 'icons/drop.png' alt='dropdown' %}" class="w-5 h-5"/>
+                    <img src="{% static 'icons/drop.png' %}" alt='dropdown' class="w-5 h-5"/>
                     <h1 class="px-4 text-blue-800 font-bold">{{note.noteName}}</h1>
                   </div>
+
                   <!-- File body -->
                   <div id='{{note}}' class="hidden p-2 px-4 text-sm space-y-4">
                     <!-- Details Navbar -->
