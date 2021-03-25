@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from notes.models import Comment, Note, Profile, StudyGroup, Category, Url
-from notes.forms import NoteForm, UserForm, ProfileForm, GroupForm
+from notes.forms import NoteForm, UrlForm, UserForm, ProfileForm, GroupForm
 
 # Create your views here.
 
@@ -38,6 +38,7 @@ class Faq(View):
         return render(request, 'faq.html', context={})
 
 class Register(View):
+    
     def get(self, request):
         context_dict = {}
         context_dict['registered'] = False
@@ -158,7 +159,7 @@ class Account(View):
 class Show_group(View):
     def get(self, request, studyGroup_slug):
         context_dict = {}
-
+        context_dict['link_form'] = UrlForm()
         try:
             # Get studyGroup related to this slug, if any
             studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
@@ -280,6 +281,41 @@ class Upload_note(View):
 
         return render(request, 'upload_note.html', context={'note_form': note_form, 'group_slug':group_slug})
 
+class Download_note(View):
+    def get(self,response, id):
+
+        note = Note.objects.get(id = id)
+
+        try:
+            filename = note.file.name.split('/')[-1]
+            response = HttpResponse(note.file, content_type='text/plain')
+            response['Content-Disposition'] = 'attachment; filename=%s' % filename
+            return response
+        except:
+            group = StudyGroup.objects.get(id=note.studyGroup.id)
+            return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group.slug}))
+
+class Add_link(View):
+    @method_decorator(login_required)
+    def get(self, request, group_slug):
+        url_form = UrlForm()
+        return render(request, 'add_link.html', context={'url_form': url_form, 'group_slug':group_slug})
+    
+    @method_decorator(login_required)
+    def post(self, request, group_slug):
+
+        group = StudyGroup.objects.get(slug=group_slug)
+        url_form = UrlForm(request.POST)
+
+        if(url_form.is_valid()):
+
+            url = url_form.save(commit=False)
+            url.studyGroup = group
+            url.save()
+            
+            return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group.slug}))
+
+        return render(request, 'add_link.html', context={'url_form': url_form, 'group_slug':group_slug})
 
 
 

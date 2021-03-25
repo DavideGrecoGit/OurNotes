@@ -17,10 +17,16 @@
         {% for note in notes %}
           <!-- File -->
           <div class="w-full flex flex-col rounded-lg border-black border-2">
+
             <!-- File Navbar -->
-            <div onclick="toggle('{{note}}','block')" class="w-full border-black border-b-2 p-2 flex flex-row items-center">
-              <img src="{% static 'icons/drop.png' %}" alt='dropdown' class="w-5 h-5"/>
-              <h1 class="px-4 text-blue-800 font-bold">{{note.noteName}}</h1>
+            <div class="w-full border-black border-b-2 p-2 flex flex-row justify-between items-center">
+              <div onclick="toggle('{{note}}','block')" class="cursor-pointer flex flex-row items-center">
+                <img src="{% static 'icons/drop.png' %}" alt='dropdown' class="w-5 h-5"/>
+                <h1 class="px-4 text-blue-800 font-bold">{{note.noteName}}</h1>
+              </div>
+              
+              <!-- Download btn -->
+              <a href="{% url 'notes:download_note' note.id %}" class="px-4 text-blue-800 font-bold">Download</a>
             </div>
 
             <!-- File body -->
@@ -38,7 +44,7 @@
                 <h1 class=" text-base font-semibold w-full border-black border-b-2">Description</h1>
                 <p>{{ note.description }}</p>    
               </div>
-              
+
               <!-- Comments -->
               {% Comments comments=comments %}{% /Comments %}
             </div>

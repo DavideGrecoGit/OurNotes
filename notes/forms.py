@@ -55,5 +55,16 @@ class NoteForm(forms.ModelForm):
         model = Note
         fields = ('noteName', 'description', 'file',)
 
+class UrlForm(forms.ModelForm):
+    link = forms.CharField()
+    link.widget.attrs.update({'class':css,'placeholder': 'Link'})
+    
+    label = forms.CharField()
+    label.widget.attrs.update({'class':css,'placeholder': 'Link label'})
+
+    class Meta:
+        model = Url
+        fields = ('link', 'label',)
+
 
 

@@ -14,12 +14,13 @@
         
             <!-- Display form fields-->
             <div class="pt-6 text-base flex flex-col items-center space-y-4">
-                {% Form_field errors=note_form.noteName.errors field=note_form.noteName %}{% /Form_field %}
-                {% Form_field errors=note_form.description.errors field=note_form.description %}{% /Form_field %}
+                {% Form_field field=note_form.noteName %}{% /Form_field %}
+                {% Form_field field=note_form.description %}{% /Form_field %}
                 {% Form_file field=note_form.file msg="Note file:" %}{% /Form_file %}
                 <!-- Submit button -->
                 {% Form_btn css="bg-blue-500" value="Upload"%}{% /Form_btn %}
             </div>
         </form>
     {% /Card_parent %}
+  </div>
 {% endblock %}
