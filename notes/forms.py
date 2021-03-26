@@ -70,8 +70,11 @@ class CommentForm(forms.ModelForm):
     text = forms.CharField(widget=forms.Textarea, required=True)
     text.widget.attrs.update({'class':css,'placeholder': 'Write a comment here...', 'rows':4, 'cols':15})
 
+    note = forms.IntegerField(widget=forms.HiddenInput())
+    user = forms.IntegerField(widget=forms.HiddenInput())
+
     class Meta:
         model = Comment
-        fields = ('text', )
+        fields = ('text','note','user', )
 
 

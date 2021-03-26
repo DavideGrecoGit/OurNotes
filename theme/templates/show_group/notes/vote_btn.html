@@ -1,0 +1,24 @@
+{% load static %}
+<div id="{{comment.id}}" class="flex flex-row justify-between items-center p-2 space-x-4">
+    <div class="flex flex-col items-center justify-center">
+        <span id="upVotes">{{comment|getUpVotes}}</span>
+        {% if group|isMember:user and user != comment.user %}
+          <div class="vote_btn cursor-pointer" data-comment_id="{{ comment.id }}" data-vote="1">
+              <img src="{{comment|getUpVoteImg:user}}" alt='up voted' class="upVote w-4 h-4"/>
+          </div>
+        {% else %}
+          <img src="{% static 'icons/upVote_empty.png' %}" alt='up vote' class="w-4 h-4"/>
+        {% endif %}
+    </div>
+    
+    <div class="flex flex-col items-center justify-center">
+        <span id="downVotes">{{comment|getDownVotes}}</span>
+        {% if group|isMember:user and user != comment.user %}
+          <div class="vote_btn cursor-pointer" data-comment_id="{{ comment.id }}" data-vote="0">
+              <img src="{{comment|getDownVoteImg:user}}" alt='down voted' class="downVote w-4 h-4"/>
+          </div>
+        {% else %}
+          <img src="{% static 'icons/downVote_empty.png' %}" alt='down vote' class="w-4 h-4"/>
+        {% endif %}
+    </div>      
+</div>

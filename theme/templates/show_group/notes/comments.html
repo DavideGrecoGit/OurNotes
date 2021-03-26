@@ -3,12 +3,15 @@
 {% load static %}
 
 <div class="flex flex-col w-auto space-y-4 pb-2">
+  <!-- Comment navbar -->
   <div onclick="toggle('{{note.noteName}}_comments','block')" class="w-full cursor-pointer border-black border-b-2 flex flex-row justify-center items-center">
     <img src="{% static 'icons/drop.png' alt='dropdown' %}" class="w-3 h-3"/>
     <h1 class="px-2 text-base  font-semibold">Comments</h1> 
   </div>
   
   <div id="{{note.noteName}}_comments">
+
+    <!-- Add a comment -->
     {% Message div_css="pb-4" condition=group|isMember:user msg="Join to leave a comment!"%}
       <form class="pb-4" method="post" action="{% url 'notes:show_group' group_slug %}">
         {% csrf_token %}
@@ -16,10 +19,9 @@
         <!-- Display form fields-->
         <div class=" pt-2 text-base flex flex-col items-center">
             {% Form_field field=comment_form.text %}{% /Form_field %}
-            <input class="w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium" 
-              type="hidden" name="username" value="{{user.username}}"/>
-            <input class="w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium"
-              type="hidden" name="note_id" value="{{note.id}}"/>
+            {% Form_hidden name="username" value=user.username %}{% /Form_hidden %}
+            {% Form_hidden name="note_id" value=note.id %}{% /Form_hidden %}
+  
             <!-- Submit button -->
             {% Form_btn css="bg-blue-500" value="Add comment"%}{% /Form_btn %}
         </div>
@@ -31,9 +33,15 @@
         {% for comment in comments|getItem:note.noteName %}
           <div class="px-8 ">
             <div class="flex flex-row justify-between items-center pr-4 ">
+              <!-- User -->
               {% Card_user css="text-sm" user=comment.user%}{% /Card_user %}
+              <!-- Vote buttons -->
+              {% Vote_btn comment=comment group=group user=user%}{% /Vote_btn %}
             </div>
-            <p class="p-2 bg-blue-50 rounded-lg">{{ comment.text }}</p>
+            <!-- Comment -->
+            <p class="p-2 bg-blue-50 rounded-lg">
+              {{ comment.text }}
+            </p>
           </div>
         {% endfor %}
       </div>

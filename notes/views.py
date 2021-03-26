@@ -3,11 +3,11 @@ from django.contrib.auth.models import Group, User
 from django.shortcuts import render,redirect
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from notes.models import Comment, Note, Profile, StudyGroup, Category, Url
+from notes.models import Comment, Note, Profile, StudyGroup, Category, Url, rates_comments
 from notes.forms import CommentForm, NoteForm, UrlForm, UserForm, ProfileForm, GroupForm
 
 # Create your views here.
@@ -285,23 +285,27 @@ class Upload_note(View):
     
     @method_decorator(login_required)
     def post(self, request, group_slug):
-        
-        user = request.user
-        group = StudyGroup.objects.get(slug=group_slug)
-        note_form = NoteForm(request.POST, request.FILES)
+        try:
+            user = request.user
+            group = StudyGroup.objects.get(slug=group_slug)
+            note_form = NoteForm(request.POST, request.FILES)
 
-        if(note_form.is_valid()):
-
-            note = note_form.save(commit=False)
-            note.user = user
-            note.studyGroup = group
-            note.file = request.FILES['file']
-
-            note.save()
             
-            return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group.slug}))
+            if(note_form.is_valid()):
 
-        return render(request, 'upload_note.html', context={'note_form': note_form, 'group_slug':group_slug})
+                note = note_form.save(commit=False)
+                note.user = user
+                note.studyGroup = group
+                note.file = request.FILES['file']
+
+                note.save()
+                
+                return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group.slug}))
+
+            return render(request, 'upload_note.html', context={'note_form': note_form, 'group_slug':group_slug})
+
+        except Exception:
+            return HttpResponse(-1)
 
 class Download_note(View):
     def get(self,response, id):
@@ -353,10 +357,6 @@ class Add_link(View):
         return render(request, 'add_link.html', context={'url_form': url_form, 'group_slug':group_slug})
 
 class Add_comment(View):
-    @method_decorator(login_required)
-    def get(self, request, group_slug):
-        comment_form = CommentForm()
-        return render(request, 'add_link.html', context={'comment_form': comment_form, 'group_slug':group_slug})
     
     @method_decorator(login_required)
     def post(self, request, group_slug):
@@ -377,6 +377,30 @@ class Add_comment(View):
             comment.save()
             
         return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group_slug}))
+
+class Vote_comment(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        comment_id = request.GET['comment_id']
+        vote = request.GET['vote']
+        user = request.user
+
+        comment = Comment.objects.get(id=int(comment_id))
+        
+        try:
+            try:
+                rates_comments.objects.filter(comment=comment, user=user).delete()
+            except Exception:
+                pass
+
+            rates_comments.objects.create(comment=comment, user=user, rating=vote)
+            upVotes = rates_comments.objects.filter(comment=comment, rating=1).count()
+            downVotes = rates_comments.objects.filter(comment=comment, rating=0).count()
+            
+            return JsonResponse({'upVotes':upVotes, 'downVotes':downVotes})
+
+        except Exception:
+            return HttpResponse(-1)
 
 
 

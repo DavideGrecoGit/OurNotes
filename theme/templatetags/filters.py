@@ -26,13 +26,38 @@ def isMember(group, user):
     return False
     
 @register.filter
-def getLikes(comment):
-    #comment = Comment.objects.get(id=comment_id)
-    likes = rates_comments.objects.filter(rating=1, comment=comment).count()
-    return likes
+def getUpVotes(comment):
+    upVotes = rates_comments.objects.filter(rating=1, comment=comment).count()
+    return upVotes
 
 @register.filter
-def getUnLikes(comment):
-    #comment = Comment.objects.get(id=comment_id)
-    not_likes = rates_comments.objects.filter(rating=0, comment=comment).count()
-    return not_likes
+def getDownVotes(comment):
+    DownVotes = rates_comments.objects.filter(rating=0, comment=comment).count()
+    return DownVotes
+
+@register.filter
+def getUpVoteImg(comment, user):
+    default_img = "/static/icons/upVote_empty.png"
+    try:
+        vote = rates_comments.objects.get(rating=1, comment=comment, user=user)
+        if(vote):
+            return "/static/icons/upVote.png"
+        
+        return default_img
+
+    except:
+        return default_img
+
+@register.filter
+def getDownVoteImg(comment, user):
+    default_img = "/static/icons/downVote_empty.png"
+    try:
+        vote = rates_comments.objects.get(rating=0, comment=comment, user=user)
+        if(vote):
+            return "/static/icons/downVote.png"
+        
+        return default_img
+
+    except:
+        return default_img
+

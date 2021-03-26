@@ -29,6 +29,10 @@ class Comments(Component):
     template = "show_group/notes/comments.html"
 
 @register.component
+class Vote_btn(Component):
+    template = "show_group/notes/vote_btn.html"
+
+@register.component
 class Members(Component):
     template = "show_group/members.html"
 
@@ -40,6 +44,10 @@ class Form_field(Component):
 @register.component
 class Form_file(Component):
     template = "base_components/forms/form_file.html"
+
+@register.component
+class Form_hidden(Component):
+    template = "base_components/forms/form_hidden.html"
 
 @register.component
 class Form_error(Component):

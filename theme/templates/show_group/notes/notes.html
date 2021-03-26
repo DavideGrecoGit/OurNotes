@@ -30,7 +30,7 @@
                 <a href="{% url 'notes:download_note' note.id %}" class="text-blue-800 font-bold"><img src="{% static 'icons/download.png' %}" alt='download' class="w-10 h-10 rounded-full"/></a>
                 <!-- Delete -->
                 {% if user == note.user%}
-                  <button id="remove_note_btn" data-note_id="{{ note.id }}" ><img src="{% static 'icons/delete.png' %}" alt='delete' class="w-10 h-10 rounded-2xl"/></button>
+                  <button class="remove_note_btn" data-note_id="{{ note.id }}" ><img src="{% static 'icons/delete.png' %}" alt='delete' class="w-10 h-10 rounded-2xl"/></button>
                 {% endif %}
 
               </div>
@@ -46,7 +46,7 @@
                 </div>
                 <hi>{{ note.date }}</hi>
               </div>
-              
+
               <!-- description -->
               <div class="space-y-2">
                 <h1 class=" text-base font-semibold w-full">Description</h1>
