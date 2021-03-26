@@ -1,5 +1,5 @@
-from notes.models import Profile, User
-from django.template.defaulttags import register
+from notes.models import Comment, Profile, rates_comments
+from django.template.defaulttags import comment, register
 
 @register.filter
 def getItem(dictionary, key):
@@ -7,9 +7,7 @@ def getItem(dictionary, key):
 
 @register.filter
 def getImage(user):
-
     default_img = "/static/icons/user_default.png"
-
     try:
         profile = Profile.objects.get(user=user)
         if(profile):
@@ -27,3 +25,14 @@ def isMember(group, user):
         return True
     return False
     
+@register.filter
+def getLikes(comment):
+    #comment = Comment.objects.get(id=comment_id)
+    likes = rates_comments.objects.filter(rating=1, comment=comment).count()
+    return likes
+
+@register.filter
+def getUnLikes(comment):
+    #comment = Comment.objects.get(id=comment_id)
+    not_likes = rates_comments.objects.filter(rating=0, comment=comment).count()
+    return not_likes

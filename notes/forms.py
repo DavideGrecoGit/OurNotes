@@ -1,6 +1,6 @@
 from enum import Flag, unique
 from django import forms
-from notes.models import Category, Note, StudyGroup, Url, User, Profile
+from notes.models import Category, Comment, Note, StudyGroup, Url, User, Profile
 from django.forms.fields import EmailField
 
 css = ' w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium'
@@ -26,16 +26,16 @@ class ProfileForm(forms.ModelForm):
 
 class GroupForm(forms.ModelForm):
     groupName = forms.CharField()
-    groupName.widget.attrs.update({'class':css,'placeholder': 'Group Name'})
+    groupName.widget.attrs.update({'class':css,'placeholder': 'Group name'})
 
     category = forms.ModelMultipleChoiceField(queryset=Category.objects.all())
     category.widget.attrs.update({'class':css})
 
     description = forms.CharField(widget=forms.Textarea, required=False)
-    description.widget.attrs.update({'class':css,'placeholder': 'Insert a description here...'})
+    description.widget.attrs.update({'class':css,'placeholder': 'Insert a description here...', 'rows':8, 'cols':15})
 
     rules = forms.CharField(widget=forms.Textarea, required=False)
-    rules.widget.attrs.update({'class':css,'placeholder': 'Insert rules here...'})
+    rules.widget.attrs.update({'class':css,'placeholder': 'Insert rules here...', 'rows':6, 'cols':15})
 
     class Meta:
         model = StudyGroup
@@ -47,7 +47,7 @@ class NoteForm(forms.ModelForm):
     noteName.widget.attrs.update({'class':css,'placeholder': 'Note Name'})
 
     description = forms.CharField(widget=forms.Textarea, required=False)
-    description.widget.attrs.update({'class':css,'placeholder': 'Insert a description here...'})
+    description.widget.attrs.update({'class':css,'placeholder': 'Insert a description here...', 'rows':4, 'cols':15})
 
     file = forms.FileField(label='Select a file', help_text='max. 42 megabytes')
 
@@ -66,5 +66,12 @@ class UrlForm(forms.ModelForm):
         model = Url
         fields = ('link', 'label',)
 
+class CommentForm(forms.ModelForm):
+    text = forms.CharField(widget=forms.Textarea, required=True)
+    text.widget.attrs.update({'class':css,'placeholder': 'Write a comment here...', 'rows':4, 'cols':15})
+
+    class Meta:
+        model = Comment
+        fields = ('text', )
 
 

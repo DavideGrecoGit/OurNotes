@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from notes.models import Comment, Note, Profile, StudyGroup, Category, Url
-from notes.forms import NoteForm, UrlForm, UserForm, ProfileForm, GroupForm
+from notes.forms import CommentForm, NoteForm, UrlForm, UserForm, ProfileForm, GroupForm
 
 # Create your views here.
 
@@ -159,7 +159,7 @@ class Account(View):
 class Show_group(View):
     def get(self, request, studyGroup_slug):
         context_dict = {}
-        context_dict['link_form'] = UrlForm()
+        context_dict['comment_form'] = CommentForm()
         try:
             # Get studyGroup related to this slug, if any
             studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
@@ -188,6 +188,28 @@ class Show_group(View):
             context_dict['group'] = None
 
         return render(request, 'show_group/show_group.html', context=context_dict)
+
+    @method_decorator(login_required)
+    def post(self, request, studyGroup_slug):
+
+        comment_form = CommentForm(request.POST)
+
+        username = request.POST['username']
+        note_id = request.POST['note_id']
+
+        print("Username: "+username)
+
+        if(comment_form.is_valid()):
+
+            user = User.objects.get(username = username)
+            note = Note.objects.get(id = note_id)
+
+            comment = comment_form.save(commit=False)
+            comment.user = user
+            comment.note = note
+            comment.save()
+            
+        return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':studyGroup_slug}))
 
 class Create_group(View):
     @method_decorator(login_required)
@@ -295,6 +317,19 @@ class Download_note(View):
             group = StudyGroup.objects.get(id=note.studyGroup.id)
             return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group.slug}))
 
+class Remove_note(View):
+    @method_decorator(login_required)
+    def get(self, request):
+
+        #if(request.user.username == )
+        note_id = request.GET['note_id']
+        note = Note.objects.get(id=note_id)
+
+        if(request.user == note.user):
+            note.delete()
+
+        return HttpResponse()
+
 class Add_link(View):
     @method_decorator(login_required)
     def get(self, request, group_slug):
@@ -317,6 +352,31 @@ class Add_link(View):
 
         return render(request, 'add_link.html', context={'url_form': url_form, 'group_slug':group_slug})
 
+class Add_comment(View):
+    @method_decorator(login_required)
+    def get(self, request, group_slug):
+        comment_form = CommentForm()
+        return render(request, 'add_link.html', context={'comment_form': comment_form, 'group_slug':group_slug})
+    
+    @method_decorator(login_required)
+    def post(self, request, group_slug):
+
+        comment_form = CommentForm(request.POST)
+
+        username = request.POST['username']
+        note_id = request.POST['note_id']
+
+        if(comment_form.is_valid()):
+
+            user = User.objects.get(username = username)
+            note = Note.objects.get(id = note_id)
+
+            comment = comment_form.save(commit=False)
+            comment.user = user
+            comment.note = note
+            comment.save()
+            
+        return redirect(reverse('notes:show_group', kwargs={'studyGroup_slug':group_slug}))
 
 
 

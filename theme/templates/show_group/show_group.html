@@ -30,7 +30,7 @@
         {% Meetings urls=urls group=group %}{% /Meetings %}
 
         <!-- Notes -->
-        {% Notes group=group notes=notes comments=comments%}{% /Notes %}
+        {% Notes group=group notes=notes  comments=comments comment_form=comment_form user=user%}{% /Notes %}
 
         <!-- Members -->
         {% Members members=members %}{% /Members %}

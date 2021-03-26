@@ -39,4 +39,19 @@ $(document).ready(function() {
     $('#join_btn').click(function() {
         manage_member(this, 'join_group')
     });
+
+    $('#remove_note_btn').click(function() {
+        console.log("Clicked")
+        if(confirm("Are you sure to remove this note?")){
+            var note_id = $(this).attr('data-note_id');
+
+            $.get('/remove_note/', {'note_id': note_id})
+            .done( function(){
+                // No need to reload
+                $("#"+note_id).removeClass("flex");
+                $("#"+note_id).addClass("hidden");
+            })
+            .fail(function(){alert("An error occured");})
+        }
+    });
 });
