@@ -29,8 +29,12 @@ class Comments(Component):
     template = "show_group/notes/comments.html"
 
 @register.component
-class Vote_btn(Component):
-    template = "show_group/notes/vote_btn.html"
+class Vote_comment_btn(Component):
+    template = "show_group/notes/vote_comment_btn.html"
+
+@register.component
+class Vote_note_btn(Component):
+    template = "show_group/notes/vote_note_btn.html"
 
 @register.component
 class Members(Component):

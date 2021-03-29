@@ -26,6 +26,7 @@
               </div>
               
               <div class="flex flex-row items-center justify-between space-x-6">
+                {% Vote_note_btn note=note group=group user=user%}{% /Vote_note_btn %}
                 <!-- Download btn -->
                 <a href="{% url 'notes:download_note' note.id %}" class="text-blue-800 font-bold"><img src="{% static 'icons/download.png' %}" alt='download' class="w-10 h-10 rounded-full"/></a>
                 <!-- Delete -->

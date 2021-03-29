@@ -7,7 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from notes.models import Comment, Note, Profile, StudyGroup, Category, Url, rates_comments
+from notes.models import Comment, Note, Profile, StudyGroup, Category, Url, rates_comments, rates_notes
 from notes.forms import CommentForm, NoteForm, UrlForm, UserForm, ProfileForm, GroupForm
 
 # Create your views here.
@@ -191,7 +191,6 @@ class Show_group(View):
 
     @method_decorator(login_required)
     def post(self, request, studyGroup_slug):
-
         comment_form = CommentForm(request.POST)
 
         username = request.POST['username']
@@ -381,7 +380,7 @@ class Add_comment(View):
 class Vote_comment(View):
     @method_decorator(login_required)
     def get(self, request):
-        comment_id = request.GET['comment_id']
+        comment_id = request.GET['id']
         vote = request.GET['vote']
         user = request.user
 
@@ -396,6 +395,30 @@ class Vote_comment(View):
             rates_comments.objects.create(comment=comment, user=user, rating=vote)
             upVotes = rates_comments.objects.filter(comment=comment, rating=1).count()
             downVotes = rates_comments.objects.filter(comment=comment, rating=0).count()
+            
+            return JsonResponse({'upVotes':upVotes, 'downVotes':downVotes})
+
+        except Exception:
+            return HttpResponse(-1)
+
+class Vote_note(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        note_id = request.GET['id']
+        vote = request.GET['vote']
+        user = request.user
+
+        note = Note.objects.get(id=int(note_id))
+        
+        try:
+            try:
+                rates_notes.objects.filter(note=note, user=user).delete()
+            except Exception:
+                pass
+
+            rates_notes.objects.create(note=note, user=user, rating=vote)
+            upVotes = rates_notes.objects.filter(note=note, rating=1).count()
+            downVotes = rates_notes.objects.filter(note=note, rating=0).count()
             
             return JsonResponse({'upVotes':upVotes, 'downVotes':downVotes})
 

@@ -21,4 +21,5 @@ urlpatterns = [
     path('remove_note/', views.Remove_note.as_view(), name='remove_note'),
     path('add_link/<slug:group_slug>/', views.Add_link.as_view(), name='add_link'),
     path('vote_comment/', views.Vote_comment.as_view(), name='vote_comment'),
+    path('vote_note/', views.Vote_note.as_view(), name='vote_note'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

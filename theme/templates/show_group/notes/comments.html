@@ -34,9 +34,9 @@
           <div class="px-8 ">
             <div class="flex flex-row justify-between items-center pr-4 ">
               <!-- User -->
-              {% Card_user css="text-sm" user=comment.user%}{% /Card_user %}
+              {% Card_user css="text-sm bg-gray-400" user=comment.user%}{% /Card_user %}
               <!-- Vote buttons -->
-              {% Vote_btn comment=comment group=group user=user%}{% /Vote_btn %}
+              {% Vote_comment_btn comment=comment group=group user=user%}{% /Vote_comment_btn %}
             </div>
             <!-- Comment -->
             <p class="p-2 bg-blue-50 rounded-lg">
