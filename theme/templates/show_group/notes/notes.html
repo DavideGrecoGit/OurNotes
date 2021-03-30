@@ -3,8 +3,28 @@
 
 <div class="p-4 px-4 flex flex-col justify-center items-center bg-white rounded-lg shadow-lg">
     <!-- Notes Navbar -->
-    <div class= "flex flex-row justify-between items-center w-full ">
-      <h1 class="w-full text-lg font-bold">Notes</h1>
+    <div class= "flex flex-row  justify-between items-center w-full ">
+      <h1 class="text-lg font-bold">Notes</h1>
+
+      <form class="flex flex-row space-x-16 bg-white p-2 rounded-lg items-center " action="{% url 'notes:show_group' group.slug %}" method="get">
+        
+        <div class="flex flex-row items-center space-x-2">
+          <input class="w-full border-black rounded-lg border-2 p-2 text-black text-sm"  
+          name="queryNote" type="search" placeholder="Filter by note name...">
+
+          <input class="cursor-pointer p-2 bg-gray-400 hover:bg-blue-500 text-sm text-white font-bold rounded-lg "
+          type="submit" name="submit" value="Filter"/>
+        </div>
+
+        <div class="space-x-4 text-sm">
+          <input class="cursor-pointer border-b-2 border-blue-500 text-blue-500 font-bold rounded-md bg-white p-2" 
+          type="submit" name="rating" value="Order by rating">
+
+          <a href="{% url 'notes:show_group' group.slug %}" class="bg-white border-t-2 border-b-2 rounded-md font-bold p-2 text-red-500 border-red-500">Reset</a>
+        </div>
+        
+      </form>
+
       {% Message condition=user.is_authenticated msg="Sign-in to upload"%}
         {% Message condition=group|isMember:user msg="Join to upload"%}
           <a href="{% url 'notes:upload_note' group.slug %}" class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Upload</a>

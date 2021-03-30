@@ -1,4 +1,5 @@
 from os import name
+from django.db.models import Q, Count
 from django.contrib.auth.models import Group, User
 from django.shortcuts import render,redirect
 from django.utils.decorators import method_decorator
@@ -17,19 +18,40 @@ class Search(View):
         context_dict = {}
         context_dict['categories'] = None
         groups = {}
-
-        # Get caegories
-        category_list = Category.objects.order_by('categoryName')
         
+        # Apply filters 
+        queryCategory = self.request.GET.get('queryCategory')
+        queryGroup = self.request.GET.get('queryGroup')
+        joined = self.request.GET.get('joined')
+            
+        if(queryCategory):
+            category_list = Category.objects.filter(Q(categoryName__icontains=queryCategory.strip())).order_by('categoryName')
+        else:   
+            category_list = Category.objects.order_by('categoryName')
+
         # Check if the query returned the categories
         if(category_list.exists()):
+            
+            categories = []
+
             # Get groups for each category
             for category in category_list:
-                group = StudyGroup.objects.filter(category = category)
-                groups[category.categoryName] = group
+
+                print(joined)
+                if(queryGroup):
+                    group = StudyGroup.objects.filter(Q(groupName__icontains=queryGroup.strip()), category=category)
+                else:  
+                    group = StudyGroup.objects.filter(category=category)
+
+                if(joined):
+                    group = group.filter(members=request.user)
+                
+                if(group or (queryGroup==None and joined==None)):
+                    categories.append(category)
+                    groups[category.categoryName] = group
 
             context_dict['groups'] = groups
-            context_dict['categories'] = category_list
+            context_dict['categories'] = categories
 
         return render(request, 'search.html', context=context_dict)
 
@@ -160,6 +182,10 @@ class Show_group(View):
     def get(self, request, studyGroup_slug):
         context_dict = {}
         context_dict['comment_form'] = CommentForm()
+
+        rating = self.request.GET.get('rating')
+        queryNote = self.request.GET.get('queryNote')
+
         try:
             # Get studyGroup related to this slug, if any
             studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
@@ -169,7 +195,14 @@ class Show_group(View):
             context_dict['urls'] = Url.objects.filter(studyGroup=studyGroup)
 
             # Get notes
-            notes = Note.objects.filter(studyGroup=studyGroup)
+            if(queryNote):
+                notes = Note.objects.filter(Q(noteName__icontains=queryNote.strip()), studyGroup=studyGroup)
+            else:
+                notes = Note.objects.filter(studyGroup=studyGroup)
+
+            if(rating):
+                notes = notes.annotate(upVotes=Count('rates', filter=Q(rates_notes__rating=1))).order_by("upVotes").reverse()
+
             context_dict['notes'] = notes
 
             # Get comments
@@ -424,7 +457,6 @@ class Vote_note(View):
 
         except Exception:
             return HttpResponse(-1)
-
 
 
 

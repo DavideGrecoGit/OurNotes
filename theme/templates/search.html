@@ -1,4 +1,5 @@
 {% extends 'base_components/base.html' %}
+{% load components %}
 {% load static %}
 
 
@@ -11,29 +12,50 @@
     <!-- Displays categories and studyGroups -->
     <div class="flex flex-col items-center space-y-6 ">
 
-      {% if categories %}
+      <form class="flex flex-row space-x-24 items-center " action="{% url 'notes:search' %}" method="get">
+        
+        <div class="flex flex-row space-x-2 bg-white p-4 shadow-lg rounded-lg  items-center">
+          <input class="w-full bg-white border-black rounded-lg border-2 p-2 text-black text-base"  
+            name="queryCategory" type="search" placeholder="Filter by categories...">
+          <input class="w-full border-black rounded-lg border-2 p-2 text-black text-base"  
+            name="queryGroup" type="search" placeholder="Filter by group name...">
+          <input class="cursor-pointer p-2 bg-gray-400 hover:bg-blue-500 text-base text-white font-bold rounded-lg "
+            type="submit" name="submit" value="Filter"/>
+        </div>
+        
+        
+        <div class="p-4 bg-white shadow-lg rounded-lg space-x-8">
+          {% if user.is_authenticated %}
+            <input class="cursor-pointer border-b-2 border-blue-500 text-blue-500 font-bold rounded-md bg-white p-2" 
+            type="submit" name="joined" value="Your groups">
+          {% endif %}
+          
+          <a href="{% url 'notes:search' %}" class="bg-white border-t-2 border-b-2 rounded-md font-bold p-2 text-red-500 border-red-500">Reset</a>
+        </div>
+      </form>
 
-          {% for cat in categories %}
-            <div class=" w-5/6 rounded-lg shadow-lg bg-white">
-              <!-- categories -->
-              <div onclick="toggle('{{cat}}')" class="px-2 p-1 rounded-lg cursor-pointer border-black border-b-2 bg-white flex flex-row items-center ">
-                <img src="{% static 'icons/drop.png' alt='dropdown' %}" class="w-5 h-5"/>
-                <h1 class="px-2 font-extrabold text-lg text-black">{{ cat.categoryName }}</h1>
-              </div>
-              <!-- studyGroups -->
-              <div id="{{cat}}" class="flex rounded-b-lg flex-col items-center justify-center space-y-3 bg-white p-4">
-                {% if groups|getItem:cat.categoryName %}
-                  {% for group in groups|getItem:cat.categoryName %}
-                    <a class="p-1 w-5/6 rounded-lg hover:bg-blue-500 hover:border-blue-500 hover:text-white border-gray-300 border-2" href="{% url 'notes:show_group' group.slug %}">
-                      <h1 class=" px-4 font-semibold text-base">{{ group.groupName }}</h1>
-                    </a>
-                  {% endfor %}
-                  {% else %}
-                      <h1 class="text-base border-black border-2 p-2 rounded-lg">No study group created.</h1>
-                  {% endif %}
-              </div>        
+      {% if categories %}
+        {% for cat in categories %}
+          <div class=" w-5/6 rounded-lg shadow-lg bg-white">
+            <!-- categories -->
+            <div onclick="toggle('{{cat}}')" class="px-2 p-1 rounded-lg cursor-pointer border-black border-b-2 bg-white flex flex-row items-center ">
+              <img src="{% static 'icons/drop.png' alt='dropdown' %}" class="w-5 h-5"/>
+              <h1 class="px-2 font-extrabold text-lg text-black">{{ cat.categoryName }}</h1>
             </div>
-          {% endfor %}
+            <!-- studyGroups -->
+            <div id="{{cat}}" class="flex rounded-b-lg flex-col items-center justify-center space-y-3 bg-white p-4">
+              {% if groups|getItem:cat.categoryName %}
+                {% for group in groups|getItem:cat.categoryName %}
+                  <a class="p-1 w-5/6 rounded-lg hover:bg-blue-500 hover:border-blue-500 hover:text-white border-gray-300 border-2" href="{% url 'notes:show_group' group.slug %}">
+                    <h1 class=" px-4 font-semibold text-base">{{ group.groupName }}</h1>
+                  </a>
+                {% endfor %}
+                {% else %}
+                    <h1 class="text-base border-black border-2 p-2 rounded-lg">No study group created.</h1>
+                {% endif %}
+            </div>        
+          </div>
+        {% endfor %}
         
       {% else %}
         <h1 class="p-2 text-lg bg-white border-black border-2 rounded-lg text-black font-bold text-center">No search results.</h1> 
