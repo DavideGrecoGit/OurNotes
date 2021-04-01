@@ -28,7 +28,7 @@ SECRET_KEY = 'm6z9v4^mtu=l65#^kp5)^jp&%8e!l$#n*3)er0_gtny72-y!i-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Ancientrom.pythonanywhere.com']
+ALLOWED_HOSTS = ['ancientrom.pythonanywhere.com']
 
 
 # Application definition
