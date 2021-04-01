@@ -288,16 +288,18 @@ class Remove_group(View):
     @method_decorator(login_required)
     def get(self, request):
 
-        #if(request.user.username == )
-        group_slug = request.GET['group_slug']
-        group = StudyGroup.objects.get(slug=group_slug)
+        try:
+            group_slug = request.GET['group_slug']
+            group = StudyGroup.objects.get(slug=group_slug)
 
-        if(request.user == group.admin):
-            group.delete()
-        else:
-            group.members.remove(request.user)
+            if(request.user == group.admin):
+                group.delete()
+            else:
+                group.members.remove(request.user)
 
-        return HttpResponse()
+            return HttpResponse()
+        except Exception:
+            return HttpResponse() 
 
 class Join_group(View):
     @method_decorator(login_required)

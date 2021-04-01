@@ -1,4 +1,0 @@
-django-active-link==0.1.7
-django-component==0.1.7
-django-tailwind==1.1.2
-Pillow==8.1.2 
