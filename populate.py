@@ -83,7 +83,7 @@ def add_note(group, creator, name):
     return note
 
 def add_rateNotes(note, user):
-    rateNote = rates_notes.objects.get_or_create(note=note, user=user, rating = r.randint(0,5))[0]
+    rateNote = rates_notes.objects.get_or_create(note=note, user=user, rating = r.randint(0,1))[0]
     rateNote.save()
     return rateNote
 
@@ -174,7 +174,7 @@ def populate(nUsers, maxGroups, maxNotes):
             # Add note
             note = add_note(group, creator, noteNames[count])
             count += 1
-            print("\t- Note: "+note.noteName+" added")
+
             # Rate, comment note
             for i in range(maxUsers):
                 # Rating note
