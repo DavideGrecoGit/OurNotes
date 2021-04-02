@@ -1,16 +1,16 @@
 {% load components %}
 
-<div class=" pt-24 p-8 w-1/4 bg-yellow-400 space-y-4">
-    <!-- group Description -->
-    {% Card_parent title="Description"%}
-      {% Message condition=group.description msg="No description available"%}
-        <p class="text-sm">{{ group.description }}</p>
-      {% /Message %}
-    {% /Card_parent %}
+<!-- group Description -->
+{% Card_parent title="Description"%}
+{% Message condition=group.description msg="No description available"%}
+  <p class="text-sm">{{ group.description }}</p>
+{% /Message %}
+{% /Card_parent %}
 
-    {% Card_parent title="Rules"%}
-      {% Message condition=group.rules msg="This group has no rules!"%}
-        <p class="text-sm">{{ group.rules }}</p>
-      {% /Message %}
-    {% /Card_parent %}
-</div>
+<!-- rules -->
+{% Card_parent title="Rules"%}
+{% Message condition=group.rules msg="This group has no rules!"%}
+  <p class="text-sm">{{ group.rules }}</p>
+{% /Message %}
+{% /Card_parent %}
+

@@ -50,12 +50,8 @@ class Form_file(Component):
     template = "base_components/forms/form_file.html"
 
 @register.component
-class Form_hidden(Component):
-    template = "base_components/forms/form_hidden.html"
-
-@register.component
 class Form_error(Component):
-    template = "base_components/forms/Form_error.html"
+    template = "base_components/forms/form_error.html"
 
 @register.component
 class Form_btn(Component):
@@ -63,7 +59,7 @@ class Form_btn(Component):
 
 @register.component
 class Group_buttons(Component):
-    template = "base_components/Group_buttons.html"
+    template = "base_components/group_buttons.html"
 
 
 # CARDS

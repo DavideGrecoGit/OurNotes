@@ -5,6 +5,8 @@ from django.conf.urls.static import static
 
 app_name = 'notes'
 
+handler404 = 'notes.views.handler404'
+
 urlpatterns = [
     path('', views.Search.as_view(), name='search'),
     path('search/', views.Search.as_view(), name='search'),

@@ -13,25 +13,31 @@
 
     <!-- Add a comment -->
     {% Message div_css="pb-4" condition=group|isMember:user msg="Join to leave a comment!"%}
+
       <form class="pb-4" method="post" action="{% url 'notes:show_group' group_slug %}">
         {% csrf_token %}
 
-        <!-- Display form fields-->
+        <!-- Comment text field -->
         <div class=" pt-2 text-base flex flex-col items-center">
             {% Form_field field=comment_form.text %}{% /Form_field %}
-            {% Form_hidden name="username" value=user.username %}{% /Form_hidden %}
-            {% Form_hidden name="note_id" value=note.id %}{% /Form_hidden %}
+
+            <input class="w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium" 
+              type="hidden" name="username" value="{{user.username}}"/>
+            <input class="w-full bg-white border-black rounded-lg border-2 p-2 text-black font-medium"
+              type="hidden" name="note_id" value="{{note.id}}"/>
   
             <!-- Submit button -->
             {% Form_btn css="bg-blue-500" value="Add comment"%}{% /Form_btn %}
         </div>
+
       </form>
     {% /Message %}
 
     {% Message div_css="w-auto" condition=comments|getItem:note.noteName msg="There are no comments to display.<br>Be the first to comment!" %}
       <div class="flex flex-col space-y-4">
+
         {% for comment in comments|getItem:note.noteName %}
-          <div class="px-8 ">
+          <div class="md:px-8 ">
             <div class="flex flex-row justify-between items-center pr-4 ">
               <!-- User -->
               {% Card_user css="text-sm bg-gray-400" user=comment.user%}{% /Card_user %}
@@ -39,11 +45,12 @@
               {% Vote_comment_btn comment=comment group=group user=user%}{% /Vote_comment_btn %}
             </div>
             <!-- Comment -->
-            <p class="p-2 bg-blue-50 rounded-lg">
+            <p class="p-2 text-left bg-blue-50 rounded-lg">
               {{ comment.text }}
             </p>
           </div>
         {% endfor %}
+
       </div>
       
     {% /Message %}

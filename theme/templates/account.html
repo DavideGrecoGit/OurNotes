@@ -9,20 +9,20 @@
   <div class="h-full min-h-screen pt-28 p-8 bg-yellow-500 flex flex-col items-center space-y-10">
 
     {% Message condition=user_account div_css=" flex flex-row justify-center items-center w-full" msg_css="bg-white" msg="Impossible to display the requested acocunt page."%}
-      <!-- Account details -->
-      <div class="w-full flex flex-row justify-around bg-white rounded-lg">
+      <!-- Account information -->
+      <div class="w-full flex flex-wrap md:flex-row items-start space-y-5 bg-opacity-0 md:space-y-0 justify-center md:justify-around bg-white md:bg-opacity-100 rounded-lg">
 
         <!-- Profile Image -->
-        {% Card_parent css=" shadow-none text-lg" title="Profile Image"%}
-          <div class=" flex flex-col justify-center items-center">
+        {% Card_parent css="w-full md:w-5/12 shadow-none text-lg" title="Profile Image"%}
+          <div class="bg-opacity-100 flex flex-col justify-center items-center">
             
             <img src="{{ user_account|getImage }}" class="object-cover h-52 w-52 rounded-full border-2 border-gray-200" 
               alt="{{ user_account.username }}'s profile image" />
 
             <!-- Form to update the image -->
-            <form class="flex flex-col justify-around text-base space-y-4" id="user_form" method="post" action="{% url 'notes:account' user_account.username %}" 16 enctype="multipart/form-data">  
+            <form class="flex flex-col justify-around text-sm space-y-4" id="user_form" method="post" action="{% url 'notes:account' user_account.username %}" 16 enctype="multipart/form-data">  
               {% csrf_token %}
-              
+                {% Form_error error=errors %}{% /Form_error %}
                 <div class="flex flex-col justify-center items-center">
                   {% Form_file field=form.profileImg msg="" %} {% /Form_file %}
                   {% Form_btn css="bg-blue-500 text-sm" value="Upload a new picture" %}{% /Form_btn %}    
@@ -32,7 +32,7 @@
         {% /Card_parent %}
         
         <!-- Account details -->
-        {% Card_parent css=" w-full  shadow-none text-lg" title="Account details"%}
+        {% Card_parent css="w-full md:w-5/12 bg-white  shadow-none text-lg" title="Account details"%}
           
           {% Card_child title="Username"%}
             <h1 class="px-4">{{ user_account.username }}</h1>
@@ -55,9 +55,9 @@
         </div>
       
         {% Message condition=groups msg="You have not joined any group yet!"%}
-          <div class="w-full px-8 flex flex-col space-y-2">
+          <div class="w-full md:px-8 flex flex-col space-y-2">
             {% for group in groups %}
-              <div id="{{ group.slug }}" class="p-2 px-6 border-2 rounded-lg border-gray-200 flex flex-row justify-between items-center shadow-md">
+              <div id="{{ group.slug }}" class="p-2 md:px-6 border-2 rounded-lg border-gray-200 flex flex-row justify-between items-center shadow-md">
                 <a href="{% url 'notes:show_group' group.slug %}" class=" px-2 mr-2 border-b-2 border-blue-500 text-blue-500 hover:text-blue-800 hover:border-blue-700 font-bold ">{{group.groupName}}</a>
                 
                 <!-- Delete/Leave buttons -->

@@ -9,7 +9,7 @@
   <div class="h-full min-h-screen pt-28 p-8 bg-yellow-500 flex flex-row items-center justify-center">
 
     {% Card_parent title="Upload a new note"%}
-        <form id="note_form" method="post" action="{% url 'notes:upload_note' group_slug %}" 16 enctype="multipart/form-data">
+        <form method="post" action="{% url 'notes:upload_note' group_slug %}" 16 enctype="multipart/form-data">
             {% csrf_token %}
         
             <!-- Display form fields-->

@@ -1,0 +1,18 @@
+{% extends 'base_components/base.html' %}
+{% load components %}
+{% load static %}
+
+{% block title_block %}
+    Error 404
+{% endblock %}
+
+{% block body_block %}
+  <div class="h-full min-h-screen pt-24 p-8 bg-yellow-500 ">
+    <!-- Displays categories and studyGroups -->
+    <div class="flex flex-col items-center space-y-6 ">
+        <h1 class="p-2 text-lg bg-white border-black border-2 rounded-lg text-black font-bold text-center">
+            The page requested does not exists.
+        </h1> 
+    </div>
+  </div>
+{% endblock %}

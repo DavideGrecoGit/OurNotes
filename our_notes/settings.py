@@ -23,12 +23,22 @@ MEDIA_DIR =  os.path.join(BASE_DIR, 'uploads')
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'm6z9v4^mtu=l65#^kp5)^jp&%8e!l$#n*3)er0_gtny72-y!i-'
+
+SECRET_KEY = 'dheui!v0(1u13puz813@*o&wqplhr+@b&%*ywc@q#=4f-2sdsr'
+
+# Or
+# key = None
+# with open('secret.key') as f:
+#     key = f.read().strip()
+# SECRET_KEY = key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS = ['ancientrom.pythonanywhere.com']
+# Or 
+# DEBUG = False
+# ALLOWED_HOSTS = ['ancientrom.pythonanywhere.com']
 
 
 # Application definition

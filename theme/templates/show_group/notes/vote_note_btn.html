@@ -4,10 +4,10 @@
         <span id="upVotes">{{note|getUpVotesNote}}</span>
         {% if group|isMember:user and user != note.user %}
           <div class="vote_note cursor-pointer" data-id="{{ note.id }}" data-vote="1">
-              <img src="{{note|getUpVoteNoteImg:user}}" alt='up voted' class="upVote w-4 h-4"/>
+              <img src="{{note|getUpVoteNoteImg:user}}" alt='up voted' class="upVote w-3 h-3 sm:w-4 sm:h-4"/>
           </div>
         {% else %}
-          <img src="{% static 'icons/upVote_empty.png' %}" alt='up vote' class="w-4 h-4"/>
+          <img src="{% static 'icons/upVote_empty.png' %}" alt='up vote' class="w-3 h-3 sm:w-4 sm:h-4"/>
         {% endif %}
     </div>
     
@@ -15,10 +15,10 @@
         <span id="downVotes">{{note|getDownVotesNote}}</span>
         {% if group|isMember:user and user != note.user %}
           <div class="vote_note cursor-pointer" data-id="{{ note.id }}" data-vote="0">
-              <img src="{{note|getDownVoteNoteImg:user}}" alt='down voted' class="downVote w-4 h-4"/>
+              <img src="{{note|getDownVoteNoteImg:user}}" alt='down voted' class="downVote w-3 h-3 sm:w-4 sm:h-4"/>
           </div>
         {% else %}
-          <img src="{% static 'icons/downVote_empty.png' %}" alt='down vote' class="w-4 h-4"/>
+          <img src="{% static 'icons/downVote_empty.png' %}" alt='down vote' class="w-3 h-3 sm:w-4 sm:h-4"/>
         {% endif %}
     </div>      
 </div>

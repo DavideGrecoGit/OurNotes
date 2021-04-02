@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body_block %}
-    <div class="h-full min-h-screen pt-24 p-8 bg-yellow-500 flex flex-row justify-around">
+    <div class="h-full min-h-screen pt-28 md:pt-32 p-8 bg-yellow-500 flex flex-row items-start">
 
         {% if registered %}
             <div class="flex flex-row justify-center items-center w-full">
@@ -16,9 +16,9 @@
                 </div>
             </div>
         {% else %}
-            {% Card_parent css="w-5/12 text-xl p-2" title="Register"%}
-                <!-- 16 enctype="multipart/form-data used to upload the image -->
-                <form id="user_form" method="post" action="{% url 'notes:register' %}" 16 enctype="multipart/form-data">
+        <div class="pt-6 w-full flex flex-col md:flex-row justify-around items-stretch space-y-4 md:space-y-0">
+            {% Card_parent css="md:w-5/12 text-xl p-2" title="Register"%}
+                <form method="post" action="{% url 'notes:register' %}" 16 enctype="multipart/form-data">
                 
                     {% csrf_token %}
 
@@ -36,8 +36,8 @@
 
             <div class="border-white border-2"></div>
 
-            {% Card_parent css="w-5/12 text-xl p-2" title="Sign-in"%}
-                <form id="login_form" method="post" action="{% url 'notes:register' %}">
+            {% Card_parent css="md:w-5/12 text-xl p-2" title="Sign-in"%}
+                <form method="post" action="{% url 'notes:register' %}">
                     {% csrf_token %}
                     <div class="pt-6 text-base flex flex-col items-center space-y-4">
                         {% Form_error error=Sign_in_errors %}{% /Form_error %}
@@ -52,6 +52,8 @@
                     </div>
                 </form>
             {% /Card_parent %}
+        </div>
+            
         {% endif %}
     </div>
     

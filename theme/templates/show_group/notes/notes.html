@@ -1,30 +1,11 @@
 {% load components %}
 {% load static %}
 
-<div class="p-4 px-4 flex flex-col justify-center items-center bg-white rounded-lg shadow-lg">
+<div class="p-2 md:p-4 flex flex-col space-y-4 justify-center items-center bg-white rounded-lg shadow-lg">
     <!-- Notes Navbar -->
-    <div class= "flex flex-row  justify-between items-center w-full ">
-      <h1 class="text-lg font-bold">Notes</h1>
-
-      <form class="flex flex-row space-x-16 bg-white p-2 rounded-lg items-center " action="{% url 'notes:show_group' group.slug %}" method="get">
-        
-        <div class="flex flex-row items-center space-x-2">
-          <input class="w-full border-black rounded-lg border-2 p-2 text-black text-sm"  
-          name="queryNote" type="search" placeholder="Filter by note name...">
-
-          <input class="cursor-pointer p-2 bg-gray-400 hover:bg-blue-500 text-sm text-white font-bold rounded-lg "
-          type="submit" name="submit" value="Filter"/>
-        </div>
-
-        <div class="space-x-4 text-sm">
-          <input class="cursor-pointer border-b-2 border-blue-500 text-blue-500 font-bold rounded-md bg-white p-2" 
-          type="submit" name="rating" value="Order by rating">
-
-          <a href="{% url 'notes:show_group' group.slug %}" class="bg-white border-t-2 border-b-2 rounded-md font-bold p-2 text-red-500 border-red-500">Reset</a>
-        </div>
-        
-      </form>
-
+    <div class= " flex flex-row space-y-2 justify-between items-center w-full ">
+      <h1 class="pl-2 text-lg font-bold">Notes</h1>
+      <!-- Upload button -->
       {% Message condition=user.is_authenticated msg="Sign-in to upload"%}
         {% Message condition=group|isMember:user msg="Join to upload"%}
           <a href="{% url 'notes:upload_note' group.slug %}" class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Upload</a>
@@ -32,26 +13,49 @@
       {% /Message %}
     </div>
 
+    <!-- Filters -->
+    <form class="w-full flex flex-row space-y-2 md:space-y-0 space-x-4  bg-white p-2 rounded-lg items-center justify-around " action="{% url 'notes:show_group' group.slug %}" method="get">
+        
+      <!-- By note name -->
+      <div class="flex flex-row items-center space-x-2">
+        <input class="w-full border-black rounded-lg border-2 p-2 text-black text-sm"  
+        name="queryNote" type="search" placeholder="Filter by note name...">
+        <input class="cursor-pointer p-2 bg-gray-400 hover:bg-blue-500 text-sm text-white font-bold rounded-lg "
+        type="submit" name="submit" value="Filter"/>
+      </div>
+
+      <div class="space-x-4 text-sm">
+        <!-- By rating -->
+        <input class="cursor-pointer border-b-2 border-blue-500 text-blue-500 font-bold rounded-md bg-white p-2" 
+        type="submit" name="rating" value="Order by rating">
+
+        <!-- Reset -->
+        <a href="{% url 'notes:show_group' group.slug %}" class="bg-white border-t-2 border-b-2 rounded-md font-bold p-2 text-red-500 border-red-500">Reset</a>
+      </div>
+      
+    </form>
+
+
     {% Message condition=notes msg="No notes have been uploaded yet.<br> Be the first!"%}
-      <div class="w-full p-4 px-8 flex flex-col space-y-4">
+      <div class="w-full p-2 md:p-4 md:px-8 flex flex-col space-y-4">
         {% for note in notes %}
           <!-- File -->
           <div id="{{note.id}}" class="w-full flex flex-col rounded-lg border-black border-2">
 
             <!-- File Navbar -->
-            <div class="w-full border-black border-b-2 p-2 flex flex-row justify-between items-center">
+            <div class="w-full border-black border-b-2 px-2 flex flex-row justify-between items-center">
               <div onclick="toggle('{{note.noteName}}_body','block')" class="cursor-pointer flex flex-row items-center">
                 <img src="{% static 'icons/drop.png' %}" alt='dropdown' class="w-5 h-5"/>
                 <h1 class="px-4 text-blue-800 font-bold">{{note.noteName}}</h1>
               </div>
               
-              <div class="flex flex-row items-center justify-between space-x-6">
+              <div class="flex flex-row items-center justify-between space-x-2 sm:space-x-6">
                 {% Vote_note_btn note=note group=group user=user%}{% /Vote_note_btn %}
                 <!-- Download btn -->
-                <a href="{% url 'notes:download_note' note.id %}" class="text-blue-800 font-bold"><img src="{% static 'icons/download.png' %}" alt='download' class="w-10 h-10 rounded-full"/></a>
+                <a href="{% url 'notes:download_note' note.id %}" class="text-blue-800 font-bold"><img src="{% static 'icons/download.png' %}" alt='download' class="w-7 h-7 sm:w-10 sm:h-10 rounded-full"/></a>
                 <!-- Delete -->
                 {% if user == note.user%}
-                  <button class="remove_note_btn" data-note_id="{{ note.id }}" ><img src="{% static 'icons/delete.png' %}" alt='delete' class="w-10 h-10 rounded-2xl"/></button>
+                  <button class="remove_note_btn" data-note_id="{{ note.id }}" ><img src="{% static 'icons/delete.png' %}" alt='delete' class="w-7 h-7 sm:w-10 sm:h-10 rounded-2xl"/></button>
                 {% endif %}
 
               </div>
@@ -59,8 +63,8 @@
 
             <!-- File body -->
             <div id='{{note.noteName}}_body' class="hidden p-2 px-4 text-sm space-y-4">
-              <!-- Details Navbar -->
-              <div class="flex flex-row justify-between px-8">
+              <!-- Details -->
+              <div class="flex flex-row justify-between sm:justify-around px-2 md:px-8">
                 <div class="flex flex-row items-center justify-center">
                   <label class="pr-2">Uploaded by:</label>
                   <h1 class="font-semibold">{{ note.user }}</h1>
@@ -68,7 +72,7 @@
                 <hi>{{ note.date }}</hi>
               </div>
 
-              <!-- description -->
+              <!-- Description -->
               <div class="space-y-2">
                 <h1 class=" text-base font-semibold w-full">Description</h1>
                 {% Message condition=note.description msg="No description available"%}

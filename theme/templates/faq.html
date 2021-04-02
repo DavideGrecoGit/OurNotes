@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block body_block %}
-  <div class="h-full min-h-screen pt-28 p-8 bg-yellow-500 flex flex-col items-center space-y-10">
+  <div class="h-full min-h-screen pt-28 px-2 md:px-8 py-8 bg-yellow-500 flex flex-col items-center space-y-10">
 
-    {% Card_parent css="w-5/6 text-xl" title="About"%}
+    {% Card_parent css="sm:w-5/6 text-xl" title="About"%}
       <p class="text-base">The objective of the web application is to give students a platform to share their notes between a study group. 
         <br>
         Users can create a study group that others can visit.
@@ -20,19 +20,27 @@
     {% /Card_parent %}
 
 
-    {% Card_parent css="w-5/6 text-xl" title="FAQs"%}
+    {% Card_parent css="sm:w-5/6 text-xl" title="FAQs"%}
+      <div class="flex flex-col justify-items-center space-y-5">
+        {% Card_child title="Should I create an account?"%}      
+          <p class="text-base">Yes.</p>
+        {% /Card_child %}
+      
+        {% Card_child title="Lorem ipsum dolor sit amet, cu idque homero perfecto vis?"%}      
+          <p class="text-base">
+            Lorem ipsum dolor sit amet, iudico eripuit ei qui, eu aeque blandit democritum duo.<br>
+            Impedit tibique no eos, pro nullam.
+          </p>
+        {% /Card_child %}
 
-      {% Card_child title="Should I create an account?"%}      
-        <p class="text-base">Yes.</p>
-      {% /Card_child %}
-    
-      {% Card_child title="Lorem ipsum dolor sit amet, cu idque homero perfecto vis?"%}      
-        <p class="text-base">
-          Lorem ipsum dolor sit amet, iudico eripuit ei qui, eu aeque blandit democritum duo.
-          <br>
-          Impedit tibique no eos, pro nullam.
-        </p>
-      {% /Card_child %}
+        {% Card_child title="Repudiandae definitiones mea ei, ne meis ludus eam?"%}      
+          <p class="text-base">
+            Lorem ipsum dolor sit amet, ad timeam abhorreant vituperatoribus eos, autem nusquam definitiones eu eos. 
+            Mel hinc labores dignissim eu. Sed senserit honestatis vituperatoribus no.<br>
+            Ea nec verear tincidunt deseruisse, vel mazim causae an, iudico feugait ponderum no vis. 
+          </p>
+        {% /Card_child %}
+      </div>
       
     {% /Card_parent %}
     
