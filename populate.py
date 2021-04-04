@@ -7,7 +7,6 @@ django.setup()
 from notes.models import Comment, Note, Url, User, Category, StudyGroup, rates_comments, rates_notes
 
 import random as r
-import csv
 from faker import Faker
 
 from django.contrib.auth.hashers import make_password, check_password
@@ -115,7 +114,7 @@ def populate(nUsers, maxGroups, maxNotes):
 
     categories = readFile('categories.txt')
     
-    urls=[('Discord','https://discord.com/'), ('Zoom','https://www.teamspeak.com/en/'), ('TeamSpeak','https://zoom.us/'), ('GoogleMeet','https://meet.google.com/')]
+    urls=[('Discord','https://discord.com/'), ('Zoom','https://zoom.us/'), ('TeamSpeak','https://www.teamspeak.com/en/'), ('GoogleMeet','https://meet.google.com/')]
 
     usernames = [fake.unique.first_name() for i in range(nUsers)]
     emails = [fake.unique.email() for i in range(nUsers)]
@@ -159,14 +158,17 @@ def populate(nUsers, maxGroups, maxNotes):
             groups.append(group)
             count += 1
 
-            # Add url
-            add_url(group, urls)
+            # Add urls
+            for y in range(r.randint(1, 4)):
+                add_url(group, urls)
+            
 
     #Add notes 
     count = 0
     for group in groups:
 
         print("Adding notes to group: "+ group.groupName +" ...")
+        print("\tAdding votes and comments to notes...")
         for x in range(r.randint(0,maxNotes)):
             
             creator, index = getRandomElement(users)
@@ -191,4 +193,4 @@ def populate(nUsers, maxGroups, maxNotes):
 
 if __name__ == '__main__':
     print('Populating database...')
-    populate(20,3,4)
+    populate(10,2,4)

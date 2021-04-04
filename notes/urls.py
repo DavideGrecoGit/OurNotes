@@ -4,7 +4,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 app_name = 'notes'
-
 handler404 = 'notes.views.handler404'
 
 urlpatterns = [

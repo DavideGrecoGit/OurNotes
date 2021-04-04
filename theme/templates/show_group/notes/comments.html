@@ -33,6 +33,7 @@
       </form>
     {% /Message %}
 
+    <!-- Message to print in case condition is not met -->
     {% Message div_css="w-auto" condition=comments|getItem:note.noteName msg="There are no comments to display.<br>Be the first to comment!" %}
       <div class="flex flex-col space-y-4">
 

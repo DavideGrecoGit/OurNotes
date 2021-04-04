@@ -20,47 +20,51 @@ def handler404(request, exception, template_name="404.html"):
 
 class Search(View):
     def get(self, request):
-        context_dict = {}
-        context_dict['categories'] = None
-        groups = {}
-        
-        # Store filters 
-        queryCategory = self.request.GET.get('queryCategory')
-        queryGroup = self.request.GET.get('queryGroup')
-        joined = self.request.GET.get('joined')
-        
-        # Category filter
-        if(queryCategory):
-            category_list = Category.objects.filter(Q(categoryName__icontains=queryCategory.strip())).order_by('categoryName')
-        else:   
-            category_list = Category.objects.order_by('categoryName')
-
-        # Check if the query returned the categories
-        if(category_list.exists()):
+        try:
+            context_dict = {}
+            context_dict['categories'] = None
+            groups = {}
             
-            categories = []
+            # Store filters 
+            queryCategory = self.request.GET.get('queryCategory')
+            queryGroup = self.request.GET.get('queryGroup')
+            joined = self.request.GET.get('joined')
+            
+            # Category filter
+            if(queryCategory):
+                category_list = Category.objects.filter(Q(categoryName__icontains=queryCategory.strip())).order_by('categoryName')
+            else:   
+                category_list = Category.objects.order_by('categoryName')
 
-            # Get groups for each category
-            for category in category_list:
-
-                # Study group filter
-                if(queryGroup):
-                    group = StudyGroup.objects.filter(Q(groupName__icontains=queryGroup.strip()), category=category)
-                else:  
-                    group = StudyGroup.objects.filter(category=category)
-
-                # "Your groups" filter
-                if(joined):
-                    group = group.filter(members=request.user)
+            # Check if the query returned the categories
+            if(category_list.exists()):
                 
-                if(group or (queryGroup==None and joined==None)):
-                    categories.append(category)
-                    groups[category.categoryName] = group
+                categories = []
 
-            context_dict['groups'] = groups
-            context_dict['categories'] = categories
+                # Get groups for each category
+                for category in category_list:
 
-        return render(request, 'search.html', context=context_dict)
+                    # Study group filter
+                    if(queryGroup):
+                        group = StudyGroup.objects.filter(Q(groupName__icontains=queryGroup.strip()), category=category)
+                    else:  
+                        group = StudyGroup.objects.filter(category=category)
+
+                    # "Your groups" filter
+                    if(joined):
+                        group = group.filter(members=request.user)
+                    
+                    if(group or (queryGroup==None and joined==None)):
+                        categories.append(category)
+                        groups[category.categoryName] = group
+
+                context_dict['groups'] = groups
+                context_dict['categories'] = categories
+
+            return render(request, 'search.html', context=context_dict)
+            
+        except Exception:
+            raise Http404()
 
 class Faq(View):
     def get(self, request):
@@ -339,8 +343,6 @@ class Upload_note(View):
             pass
 
         raise Http404()
-
-        
     
     @method_decorator(login_required)
     def post(self, request, group_slug):
@@ -348,6 +350,9 @@ class Upload_note(View):
             user = request.user
             group = StudyGroup.objects.get(slug=group_slug)
             note_form = NoteForm(request.POST, request.FILES)
+
+            if(Note.objects.get(noteName = note_form.noteName)):
+                return render(request, 'upload_note.html', context={'note_form': note_form, 'group_slug':group_slug})
 
             if(note_form.is_valid()):
 

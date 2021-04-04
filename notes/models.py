@@ -20,7 +20,7 @@ def user_imgs(instance, filename):
     return os.path.join('user_{0}'.format(instance.user.id),os.path.join("profile_imgs", filename))
 
 def user_notes(instance, filename): 
-    # file will be uploaded to MEDIA_ROOT / user_<id>/<filename> 
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename> 
     return os.path.join('user_{0}'.format(instance.user.id),os.path.join("notes", filename))
 
 User._meta.get_field('email')._unique = True
@@ -68,7 +68,7 @@ class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploadedBy')
     studyGroup = models.ForeignKey(StudyGroup, on_delete=models.CASCADE)
 
-    rates = models.ManyToManyField(User, through='rates_notes', through_fields=('note', 'user'))
+    rates = models.ManyToManyField(User, through='rates_notes', through_fields=('note', 'user'), blank = True)
 
     def __str__(self):
         return self.noteName
@@ -79,6 +79,15 @@ class rates_notes(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if(self.rating):
+            if(self.rating<0):
+                self.rating = 0
+            elif(self.rating>1):
+                self.rating = 1
+        
+        super(rates_notes, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username +" rates the note: "+ self.note.noteName +" "+ str(self.rating)
@@ -101,6 +110,15 @@ class rates_comments(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if(self.rating):
+            if(self.rating<0):
+                self.rating = 0
+            elif(self.rating>1):
+                self.rating = 1
+        
+        super(rates_notes, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username +" rates the comment: "+ self.comment.text +" "+ str(self.rating)

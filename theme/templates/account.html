@@ -8,7 +8,10 @@
 {% block body_block %}
   <div class="h-full min-h-screen pt-28 p-8 bg-yellow-500 flex flex-col items-center space-y-10">
 
-    {% Message condition=user_account div_css=" flex flex-row justify-center items-center w-full" msg_css="bg-white" msg="Impossible to display the requested acocunt page."%}
+    {% Message condition=user_account 
+      div_css=" flex flex-row justify-center items-center w-full" 
+      msg_css="bg-white"
+      msg="Impossible to display the requested acocunt page."%}
       <!-- Account information -->
       <div class="w-full flex flex-wrap md:flex-row items-start space-y-5 bg-opacity-0 md:space-y-0 justify-center md:justify-around bg-white md:bg-opacity-100 rounded-lg">
 

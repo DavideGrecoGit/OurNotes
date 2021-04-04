@@ -38,7 +38,7 @@ ALLOWED_HOSTS = []
 
 # Or 
 # DEBUG = False
-# ALLOWED_HOSTS = ['ancientrom.pythonanywhere.com']
+# ALLOWED_HOSTS = ['ancientrom.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition

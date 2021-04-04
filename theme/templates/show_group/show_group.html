@@ -12,7 +12,11 @@
 {% block body_block %}
   <div class="h-full w-full bg-yellow-500">
     
-    {% Message condition=group div_css="pt-24 p-8 flex flex-row justify-center items-center w-full" msg_css="p-2 md:text-lg bg-white" msg="The group you are looking for does not exist."%}
+    <!-- Message to print in case condition is not met -->
+    {% Message condition=group 
+      div_css="pt-24 p-8 flex flex-row justify-center items-center w-full" 
+      msg_css="p-2 md:text-lg bg-white" 
+      msg="The group you are looking for does not exist."%}
       
     <div class="min-h-screen w-full flex flex-col-reverse lg:flex-row">
       <!-- Main -->
@@ -23,7 +27,9 @@
           <a class=" border-white border-2 p-2 rounded-lg md:text-base text-white font-bold
           hover:text-yellow-500 hover:bg-white"
           href="{% url 'notes:search' %}">Back</a>
-          <h1 class="p-2 text-center w-1/2 border-b-4 border-white text-white md:text-xl font-bold">{{ group.groupName }}</h1>
+          <h1 class="p-2 text-center w-1/2 border-b-4 border-white text-white md:text-xl font-bold">
+            {{ group.groupName }}
+          </h1>
           <!-- Join, Leave, Delete buttons -->
           {% Group_buttons group=group user=user%} {% /Group_buttons %}
         </div>
@@ -37,7 +43,11 @@
         {% Meetings urls=urls group=group %}{% /Meetings %}
 
         <!-- Notes -->
-        {% Notes group=group notes=notes  comments=comments comment_form=comment_form user=user%}{% /Notes %}
+        {% Notes group=group 
+            notes=notes 
+            comments=comments 
+            comment_form=comment_form 
+            user=user%}{% /Notes %}
 
         <!-- Members -->
         {% Members members=members %}{% /Members %}
@@ -49,9 +59,6 @@
         {% Sidebar group=group%}{% /Sidebar %}
       </div>
     </div>
-      
-
-      
 
     {% /Message %}
     

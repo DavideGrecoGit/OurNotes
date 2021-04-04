@@ -4,13 +4,19 @@
     <div class="flex flex-row justify-between items-center">
         <h1 class="w-full text-lg font-bold">Meeting links</h1>
         {% if user == group.admin %}
-            <a href="{% url 'notes:add_link' group.slug %}" class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Add</a>
+            <a href="{% url 'notes:add_link' group.slug %}" 
+                class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">
+                Add
+            </a>
         {% endif %}
     </div>
     
     <div class=" flex flex-wrap items-baseline justify-center md:flex-row space-y-2 space-x-2 md:space-x-4 md:space-y-0 rounded-lg ">
         {% for url in urls %}
-        <a href='{{ url.link }}' target="_blank" class="text-center border-blue-500 border-b-2 font-semibold text-blue-500">{{ url.label }}</a>
+        <a href='{{ url.link }}' target="_blank" 
+            class="text-center border-blue-500 border-b-2 font-semibold text-blue-500">
+            {{ url.label }}
+        </a>
         {% endfor %}
     </div>
 </div>

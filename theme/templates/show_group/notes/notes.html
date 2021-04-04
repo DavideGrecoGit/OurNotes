@@ -8,20 +8,23 @@
       <!-- Upload button -->
       {% Message condition=user.is_authenticated msg="Sign-in to upload"%}
         {% Message condition=group|isMember:user msg="Join to upload"%}
-          <a href="{% url 'notes:upload_note' group.slug %}" class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">Upload</a>
+          <a href="{% url 'notes:upload_note' group.slug %}" 
+            class="p-1 px-2 text-base rounded-lg border-2 bg-white border-green-600 font-bold text-green-600 hover:text-white hover:bg-green-600">
+            Upload</a>
         {% /Message %}
       {% /Message %}
     </div>
 
     <!-- Filters -->
-    <form class="w-full flex flex-row space-y-2 md:space-y-0 space-x-4  bg-white p-2 rounded-lg items-center justify-around " action="{% url 'notes:show_group' group.slug %}" method="get">
+    <form class="w-full flex flex-row space-y-2 md:space-y-0 space-x-4  bg-white p-2 rounded-lg items-center justify-around " 
+      action="{% url 'notes:show_group' group.slug %}" method="get">
         
       <!-- By note name -->
       <div class="flex flex-row items-center space-x-2">
         <input class="w-full border-black rounded-lg border-2 p-2 text-black text-sm"  
-        name="queryNote" type="search" placeholder="Filter by note name...">
+          name="queryNote" type="search" placeholder="Filter by note name...">
         <input class="cursor-pointer p-2 bg-gray-400 hover:bg-blue-500 text-sm text-white font-bold rounded-lg "
-        type="submit" name="submit" value="Filter"/>
+          type="submit" name="submit" value="Filter"/>
       </div>
 
       <div class="space-x-4 text-sm">
@@ -30,7 +33,10 @@
         type="submit" name="rating" value="Order by rating">
 
         <!-- Reset -->
-        <a href="{% url 'notes:show_group' group.slug %}" class="bg-white border-t-2 border-b-2 rounded-md font-bold p-2 text-red-500 border-red-500">Reset</a>
+        <a href="{% url 'notes:show_group' group.slug %}" 
+          class="bg-white border-t-2 border-b-2 rounded-md font-bold p-2 text-red-500 border-red-500">
+          Reset
+        </a>
       </div>
       
     </form>
@@ -52,10 +58,14 @@
               <div class="flex flex-row items-center justify-between space-x-2 sm:space-x-6">
                 {% Vote_note_btn note=note group=group user=user%}{% /Vote_note_btn %}
                 <!-- Download btn -->
-                <a href="{% url 'notes:download_note' note.id %}" class="text-blue-800 font-bold"><img src="{% static 'icons/download.png' %}" alt='download' class="w-7 h-7 sm:w-10 sm:h-10 rounded-full"/></a>
+                <a href="{% url 'notes:download_note' note.id %}" class="text-blue-800 font-bold">
+                  <img src="{% static 'icons/download.png' %}" alt='download' class="w-7 h-7 sm:w-10 sm:h-10 rounded-full"/>
+                </a>
                 <!-- Delete -->
-                {% if user == note.user%}
-                  <button class="remove_note_btn" data-note_id="{{ note.id }}" ><img src="{% static 'icons/delete.png' %}" alt='delete' class="w-7 h-7 sm:w-10 sm:h-10 rounded-2xl"/></button>
+                {% if user == note.user or user == group.admin %}
+                  <button class="remove_note_btn" data-note_id="{{ note.id }}" >
+                    <img src="{% static 'icons/delete.png' %}" alt='delete' class="w-7 h-7 sm:w-10 sm:h-10 rounded-2xl"/>
+                  </button>
                 {% endif %}
 
               </div>
