@@ -118,7 +118,7 @@ class rates_comments(models.Model):
             elif(self.rating>1):
                 self.rating = 1
         
-        super(rates_notes, self).save(*args, **kwargs)
+        super(rates_comments, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username +" rates the comment: "+ self.comment.text +" "+ str(self.rating)

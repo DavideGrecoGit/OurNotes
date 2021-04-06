@@ -189,48 +189,47 @@ class Account(View):
 class Show_group(View):
     def get(self, request, studyGroup_slug):
         
-        try:
-            context_dict = {}
-            context_dict['comment_form'] = CommentForm()
+ 
+        context_dict = {}
+        context_dict['comment_form'] = CommentForm()
 
-            # Get filters
-            rating = self.request.GET.get('rating')
-            queryNote = self.request.GET.get('queryNote')
-            
-            # Get studyGroup related to this slug, if any
-            studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
-            context_dict['group'] = studyGroup
+        # Get filters
+        rating = self.request.GET.get('rating')
+        queryNote = self.request.GET.get('queryNote')
+        
+        # Get studyGroup related to this slug, if any
+        studyGroup = StudyGroup.objects.get(slug=studyGroup_slug)
+        context_dict['group'] = studyGroup
 
-            # Get urls
-            context_dict['urls'] = Url.objects.filter(studyGroup=studyGroup)
+        # Get urls
+        context_dict['urls'] = Url.objects.filter(studyGroup=studyGroup)
 
-            # Get notes, apply filter
-            if(queryNote):
-                notes = Note.objects.filter(Q(noteName__icontains=queryNote.strip()), studyGroup=studyGroup)
-            else:
-                notes = Note.objects.filter(studyGroup=studyGroup)
+        # Get notes, apply filter
+        if(queryNote):
+            notes = Note.objects.filter(Q(noteName__icontains=queryNote.strip()), studyGroup=studyGroup)
+        else:
+            notes = Note.objects.filter(studyGroup=studyGroup)
 
-            # Apply rating filter
-            if(rating):
-                notes = notes.annotate(upVotes=Count('rates', filter=Q(rates_notes__rating=1))).order_by("upVotes").reverse()
+        # Apply rating filter
+        if(rating):
+            notes = notes.annotate(upVotes=Count('rates', filter=Q(rates_notes__rating=1))).order_by("upVotes").reverse()
 
-            context_dict['notes'] = notes
+        context_dict['notes'] = notes
 
-            # Get comments
-            comments = {}
-            for note in notes:
-                comment = Comment.objects.filter(note = note)
-                comments[note.noteName] = comment
+        # Get comments
+        comments = {}
+        for note in notes:
+            comment = Comment.objects.filter(note = note)
+            comments[note.noteName] = comment
 
-            context_dict['comments'] = comments
+        context_dict['comments'] = comments
 
-            #Get members        
-            context_dict['members'] = studyGroup.members.all().order_by("username")
+        #Get members        
+        context_dict['members'] = studyGroup.members.all().order_by("username")
 
-            return render(request, 'show_group/show_group.html', context=context_dict)
+        return render(request, 'show_group/show_group.html', context=context_dict)
 
-        except Exception:
-            raise Http404()
+
 
 
     @method_decorator(login_required)

@@ -13,10 +13,7 @@
   <div class="h-full w-full bg-yellow-500">
     
     <!-- Message to print in case condition is not met -->
-    {% Message condition=group 
-      div_css="pt-24 p-8 flex flex-row justify-center items-center w-full" 
-      msg_css="p-2 md:text-lg bg-white" 
-      msg="The group you are looking for does not exist."%}
+    {% Message condition=group div_css="pt-24 p-8 flex flex-row justify-center items-center w-full" msg_css="p-2 md:text-lg bg-white" msg="The group you are looking for does not exist."%}
       
     <div class="min-h-screen w-full flex flex-col-reverse lg:flex-row">
       <!-- Main -->
@@ -43,11 +40,8 @@
         {% Meetings urls=urls group=group %}{% /Meetings %}
 
         <!-- Notes -->
-        {% Notes group=group 
-            notes=notes 
-            comments=comments 
-            comment_form=comment_form 
-            user=user%}{% /Notes %}
+        {% Notes group=group notes=notes comments=comments comment_form=comment_form user=user%}
+        {% /Notes %}
 
         <!-- Members -->
         {% Members members=members %}{% /Members %}

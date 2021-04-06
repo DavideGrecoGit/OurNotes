@@ -1,4 +1,6 @@
 import os
+import shutil
+from django.core.files import File
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'our_notes.settings')
 
@@ -76,10 +78,22 @@ def add_url(group, urls):
     return url
 
 def add_note(group, creator, name):
-    note = Note.objects.get_or_create(studyGroup=group, user=creator, noteName=name)[0]
-    note.description = getParagraph(0,6)
-    note.save()
-    return note
+    try:
+        note = Note.objects.get_or_create(studyGroup=group, user=creator, noteName=name)[0]
+        note.description = getParagraph(0,6)
+        #notePath = os.path.join("uploads", os.path.join('user_{0}'.format(creator.id), "notes"))
+        filePath = os.path.join("theme", os.path.join("static", "categories.txt"))
+        #os.makedirs(notePath)
+        #shutil.copy( filePath, os.path.join(notePath, "categories.txt"))
+        
+        file = open(filePath)
+        note.file.save(fake.file_name(), File(file))
+        file.close()
+
+        note.save()
+        return note
+    except Exception:
+        return None
 
 def add_rateNotes(note, user):
     rateNote = rates_notes.objects.get_or_create(note=note, user=user, rating = r.randint(0,1))[0]
@@ -175,20 +189,22 @@ def populate(nUsers, maxGroups, maxNotes):
 
             # Add note
             note = add_note(group, creator, noteNames[count])
-            count += 1
 
-            # Rate, comment note
-            for i in range(maxUsers):
-                # Rating note
-                user, index = getRandomElement(users)
-                add_rateNotes(note, user)
-                
-                # Adding a comment
-                comment = add_comment(note, user)
-                
-                # Rating the comment
-                add_rateComment(comment, user)
-                #reply(note, user, comment, 10)
+            if(note!=None):
+                count += 1
+
+                # Rate, comment note
+                for i in range(maxUsers):
+                    # Rating note
+                    user, index = getRandomElement(users)
+                    add_rateNotes(note, user)
+                    
+                    # Adding a comment
+                    comment = add_comment(note, user)
+                    
+                    # Rating the comment
+                    add_rateComment(comment, user)
+                    #reply(note, user, comment, 10)
             
 
 if __name__ == '__main__':
